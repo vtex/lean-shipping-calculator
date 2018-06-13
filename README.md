@@ -58,21 +58,28 @@ Object with lean shipping options
 
 ### getLeanShippingOptions
 
+Return all options are only returned if they are worthy according to the calculation.
+
 ```js
 const leanShippingCalculator = require('@vtex/lean-shipping-calculator')
 
-const options = leanShippingCalculator.getLeanShippingOptions(logisticsInfo, activeChannel)
+const options = leanShippingCalculator.getLeanShippingOptions(
+  logisticsInfo,
+  activeChannel
+)
 
 console.log(options)
 // {
 //   cheapest: [{item1}, {item2}],
-//   fastest: [{item1}, {item2}],
+//   fastest:  [{item1}, {item2}],
 //   combined: [{item1}, {item2}]
 // }
+```
 
-All options are only returned if they are worthy according to the calculation.
 An example of the function returning only cheapest option:
 
+```js
+console.log(options)
 // {
 //   cheapest: [{item1}, {item2}]
 // }
@@ -119,6 +126,8 @@ console.log(optionDetails)
 
 ### getSelectedDeliveryOption
 
+Returns the selected lean options
+
 ```js
 const leanShippingCalculator = require('@vtex/lean-shipping-calculator')
 
@@ -130,6 +139,5 @@ const optionToBeSelected = leanShippingCalculator.getSelectedDeliveryOption({
   activeDeliveryOption,
 })
 
-// It returns the selected lean options
 console.log(optionToBeSelected) // CHEAPEST
 ```
