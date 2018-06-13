@@ -84,7 +84,7 @@ function filterSlasByChannel(slas) {
 }
 
 function createArrayOfSlasObject(slas) {
-  return slas.map((sla, index) => ({
+  return slas.map(sla => ({
     ...sla,
     shippingEstimateInSeconds: getShippingEstimateInSeconds(
       sla.shippingEstimate
