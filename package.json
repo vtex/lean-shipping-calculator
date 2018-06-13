@@ -11,6 +11,7 @@
   "scripts": {
     "test": "cross-env NODE_ENV=test jest",
     "build": "cross-env NODE_ENV=production rollup -c",
+    "build:link": "npm link && watch 'npm run build' src",
     "prepublishOnly": "npm run build"
   },
   "keywords": [],
@@ -33,7 +34,8 @@
     "rollup-plugin-babel": "^3.0.3",
     "rollup-plugin-commonjs": "^9.1.0",
     "rollup-plugin-node-resolve": "^3.3.0",
-    "rollup-plugin-uglify": "^3.0.0"
+    "rollup-plugin-uglify": "^3.0.0",
+    "watch": "^1.0.2"
   },
   "jest": {
     "transform": {
