@@ -5,7 +5,7 @@
 ## Install
 
 ```sh
-$ npm install @vtex/lean-shipping-calculator
+$ npm install @vtex/lean-shipping-calculator -S
 ```
 
 ## Usage
@@ -28,26 +28,18 @@ An example of the function returning only cheapest option:
   cheapest: [{item1}, {item2}]
 }
 */
-
 ```
+
 ## API
 
-### getShippingEstimateQuantityInSeconds(estimate)
+### getLeanShippingOptions
 
-Returns shippingEstimate converted to seconds
+Returns lean shipping options (cheapest, fastest and combined)
 
-#### estimate
+### getOptionsDetails
 
-Type: `String`
+Get more details about each lean option
 
-shippingEstimate of a given SLA
+### getSelectedDeliveryOption
 
-### getLatestSla(slas)
-
-Returns the SLA that will take the most time (i.e: worst-case scenario in a shippingEstimate context)
-
-#### slas
-
-Type: `Array`
-
-List of SLAS
+Get selected delivery options
