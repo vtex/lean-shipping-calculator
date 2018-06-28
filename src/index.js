@@ -31,7 +31,12 @@ function filterEqualOptions(options) {
     }
   })
 
-  return finalOptions
+  return finalOptions.filter(
+    (option, index) =>
+      finalOptions[index + 1]
+        ? option.price < finalOptions[index + 1].price
+        : true
+  )
 }
 
 function getOptionsDetails(delivery) {
@@ -83,9 +88,14 @@ function filterSlasByChannel(slas) {
   )
 }
 
-function createArrayOfSlasObject(slas) {
+function createArrayOfSlasObject(slas, logisticsInfo) {
+  const accumulatedPrices = logisticsInfo
+    .map(li => li.slas.find(localSla => localSla.id))
+    .reduce((accPrice, currSla) => currSla.price + accPrice, 0)
+
   return slas.map(sla => ({
     ...sla,
+    price: accumulatedPrices,
     shippingEstimateInSeconds: getShippingEstimateInSeconds(
       sla.shippingEstimate
     ),
@@ -97,7 +107,7 @@ function createArraysOfSlas(logisticsInfo) {
     const filteredByChannel = filterSlasByChannel(item.slas)
 
     return filteredByChannel.length
-      ? createArrayOfSlasObject(filteredByChannel)
+      ? createArrayOfSlasObject(filteredByChannel, logisticsInfo)
       : []
   })
 }
