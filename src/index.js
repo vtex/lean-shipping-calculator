@@ -18,6 +18,13 @@ function getShippingEstimateInSeconds(shippingEstimate) {
   )
 }
 
+function filterPreviousExpensiveOptions(options) {
+  return options.filter(
+    (option, index) =>
+      options[index + 1] ? option.price < options[index + 1].price : true
+  )
+}
+
 function filterEqualOptions(options) {
   const finalOptions = []
 
@@ -31,12 +38,7 @@ function filterEqualOptions(options) {
     }
   })
 
-  return finalOptions.filter(
-    (option, index) =>
-      finalOptions[index + 1]
-        ? option.price < finalOptions[index + 1].price
-        : true
-  )
+  return filterPreviousExpensiveOptions(finalOptions)
 }
 
 function getOptionsDetails(delivery) {
@@ -88,14 +90,19 @@ function filterSlasByChannel(slas) {
   )
 }
 
-function createArrayOfSlasObject(slas, logisticsInfo) {
-  const accumulatedPrices = logisticsInfo
-    .map(li => li.slas.find(localSla => localSla.id))
-    .reduce((accPrice, currSla) => currSla.price + accPrice, 0)
+function getSlaAccumulatedPrice(sla, logisticsInfo) {
+  return logisticsInfo
+    .map(li => li.slas.find(localSla => localSla.id === sla.id))
+    .reduce(
+      (accPrice, currSla) => (currSla ? currSla.price + accPrice : accPrice),
+      0
+    )
+}
 
+function createArrayOfSlasObject(slas, logisticsInfo) {
   return slas.map(sla => ({
     ...sla,
-    price: accumulatedPrices,
+    price: getSlaAccumulatedPrice(sla, logisticsInfo),
     shippingEstimateInSeconds: getShippingEstimateInSeconds(
       sla.shippingEstimate
     ),
