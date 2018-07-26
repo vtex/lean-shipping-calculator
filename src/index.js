@@ -133,40 +133,48 @@ function findLogisticsInfoWithSameId(logisticsInfo, currentLi, index) {
 }
 
 function setSelectedSla(logisticsInfo, selectedSlas, activeChannel) {
-  return logisticsInfo.map((logisticsItem, index) => {
+  const newLogisticsInfo = []
+
+  logisticsInfo.forEach((logisticsItem, index) => {
     if (
       isUnavailable(logisticsItem) ||
       (isPickup(logisticsItem) && isPickup(activeChannel))
     ) {
-      return logisticsItem
+      newLogisticsInfo.push(logisticsItem)
+
+      return
     }
 
     const previousLogisticsWithSameId = findLogisticsInfoWithSameId(
-      logisticsInfo,
+      newLogisticsInfo,
       logisticsItem,
       index
     )
 
     if (previousLogisticsWithSameId) {
-      return {
+      newLogisticsInfo.push({
         ...logisticsItem,
         selectedSla: previousLogisticsWithSameId.selectedSla,
         selectedDeliveryChannel:
           previousLogisticsWithSameId.selectedDeliveryChannel,
-      }
+      })
+
+      return
     }
 
     const currentSla = selectedSlas && selectedSlas[index]
     const slaId = currentSla && selectedSlas[index].id
     const slaDeliveryChannel = currentSla && selectedSlas[index].deliveryChannel
 
-    return {
+    newLogisticsInfo.push({
       ...logisticsItem,
       selectedSla: slaId || logisticsItem.selectedSla,
       selectedDeliveryChannel:
         slaDeliveryChannel || logisticsItem.selectedDeliveryChannel,
-    }
+    })
   })
+
+  return newLogisticsInfo
 }
 
 function getSmallerThanIndex(averages, index) {
