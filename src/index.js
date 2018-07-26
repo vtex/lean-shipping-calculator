@@ -126,6 +126,12 @@ function isUnavailable(logisticsInfo) {
   )
 }
 
+function findLogisticsInfoWithSameId(logisticsInfo, currentLi, index) {
+  return logisticsInfo.find(
+    (li, localIndex) => li.itemId === currentLi.itemId && localIndex < index
+  )
+}
+
 function setSelectedSla(logisticsInfo, selectedSlas, activeChannel) {
   return logisticsInfo.map((logisticsItem, index) => {
     if (
@@ -133,6 +139,21 @@ function setSelectedSla(logisticsInfo, selectedSlas, activeChannel) {
       (isPickup(logisticsItem) && isPickup(activeChannel))
     ) {
       return logisticsItem
+    }
+
+    const previousLogisticsWithSameId = findLogisticsInfoWithSameId(
+      logisticsInfo,
+      logisticsItem,
+      index
+    )
+
+    if (previousLogisticsWithSameId) {
+      return {
+        ...logisticsItem,
+        selectedSla: previousLogisticsWithSameId.selectedSla,
+        selectedDeliveryChannel:
+          previousLogisticsWithSameId.selectedDeliveryChannel,
+      }
     }
 
     const currentSla = selectedSlas && selectedSlas[index]
