@@ -182,8 +182,8 @@ export function getCheapestCombination(logisticsInfo) {
 function getLatestSLAEstimate(option) {
   const latestSla = estimateCalculator.getLatestSla(
     option
-      .map(li => (!!li.selectedSla || hasSLAs(li)) && getSelectedSlaInSlas(li))
-      .filter(item => item)
+      .filter(li => (!!li.selectedSla || hasSLAs(li)) && isDelivery(li))
+      .map(li => getSelectedSlaInSlas(li))
   )
 
   return latestSla && latestSla.shippingEstimate
@@ -193,7 +193,7 @@ function getAccumulatedPrice(option) {
   return (
     option &&
     option
-      .filter(li => !!li.selectedSla || hasSLAs(li))
+      .filter(li => (!!li.selectedSla || hasSLAs(li)) && isDelivery(li))
       .reduce((acc, currentItem) => {
         const selectedSla = getSelectedSlaInSlas(currentItem)
 
@@ -219,7 +219,7 @@ function convertShippingEstimateToSeconds(sla) {
 }
 
 function getTotalEstimate(leanOption) {
-  return leanOption.reduce((acc, currentItem) => {
+  return leanOption.filter(li => isDelivery(li)).reduce((acc, currentItem) => {
     const selectedSla = getSelectedSlaInSlas(currentItem)
 
     return (

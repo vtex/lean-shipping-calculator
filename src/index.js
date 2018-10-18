@@ -4,7 +4,7 @@ import minBy from 'lodash/minBy'
 import isEqual from 'lodash/isEqual'
 import omit from 'lodash/omit'
 import { getStructuredOption } from './DeliveryPackagesUtils'
-import { CHEAPEST, COMBINED, FASTEST } from './constants'
+import { CHEAPEST, COMBINED, FASTEST, PICKUP_IN_STORE } from './constants'
 import {
   hasDeliveryWindows,
   hasOnlyScheduledDelivery,
