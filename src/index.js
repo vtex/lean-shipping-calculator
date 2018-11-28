@@ -4,7 +4,7 @@ import minBy from 'lodash/minBy'
 import isEqual from 'lodash/isEqual'
 import omit from 'lodash/omit'
 import { getStructuredOption } from './DeliveryPackagesUtils'
-import { CHEAPEST, COMBINED, FASTEST, PICKUP_IN_STORE } from './constants'
+import { CHEAPEST, COMBINED, FASTEST } from './constants'
 import {
   hasDeliveryWindows,
   hasOnlyScheduledDelivery,
@@ -19,9 +19,8 @@ function getShippingEstimateInSeconds(shippingEstimate) {
 }
 
 function filterPreviousExpensiveOptions(options) {
-  return options.filter(
-    (option, index) =>
-      options[index + 1] ? option.price < options[index + 1].price : true
+  return options.filter((option, index) =>
+    options[index + 1] ? option.price < options[index + 1].price : true
   )
 }
 
@@ -82,11 +81,10 @@ function getSelectedDeliveryOption({
 function filterSlasByChannel(slas) {
   if (!slas) return
 
-  return slas.filter(
-    sla =>
-      hasOnlyScheduledDelivery(slas)
-        ? isDelivery(sla)
-        : isDelivery(sla) && !hasDeliveryWindows(sla)
+  return slas.filter(sla =>
+    hasOnlyScheduledDelivery(slas)
+      ? isDelivery(sla)
+      : isDelivery(sla) && !hasDeliveryWindows(sla)
   )
 }
 
