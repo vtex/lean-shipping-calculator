@@ -9,6 +9,7 @@
     "lib"
   ],
   "scripts": {
+    "lint": "eslint src/**/*.js",
     "test": "cross-env NODE_ENV=test jest",
     "build": "cross-env NODE_ENV=production rollup -c",
     "build:link": "npm link && watch 'npm run build' src",
@@ -29,6 +30,7 @@
     "eslint": "^4.18.0",
     "eslint-config-vtex": "^8.0.0",
     "eslint-plugin-jest": "^21.12.2",
+    "husky": "^1.2.0",
     "jest": "^22.3.0",
     "rollup": "^0.57.1",
     "rollup-plugin-babel": "^3.0.3",
@@ -48,5 +50,10 @@
   "dependencies": {
     "@vtex/estimate-calculator": "1.0.7",
     "lodash": "^4.17.5"
+  },
+  "husky": {
+    "hooks": {
+      "pre-push": "yarn run lint && yarn run test"
+    }
   }
 }
