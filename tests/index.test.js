@@ -1,3 +1,4 @@
+import { CHEAPEST, DELIVERY } from '../src/constants'
 const {
   getLeanShippingOptions,
   getOptionsDetails,
@@ -57,13 +58,15 @@ describe('Check if getLeanShippingOptions', () => {
 describe('Check if getOptionsDetails', () => {
   it('For correct lean shipping options details', () => {
     const delivery = {
-      CHEAPEST: [
+      [CHEAPEST]: [
         {
+          selectedDeliveryChannel: DELIVERY,
           selectedSla: 'Normal',
           slas: [
             {
               id: 'Normal',
               price: 100,
+              deliveryChannel: DELIVERY,
               shippingEstimate: '1bd',
             },
           ],
@@ -77,7 +80,7 @@ describe('Check if getOptionsDetails', () => {
       {
         averageEstimatePerItem: 86400,
         id: 'CHEAPEST',
-        packagesLength: 0,
+        packagesLength: 1,
         price: 100,
         shippingEstimate: '1bd',
       },
