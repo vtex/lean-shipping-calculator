@@ -9,10 +9,10 @@
     "lib"
   ],
   "scripts": {
-    "lint": "eslint src/**/*.js",
+    "lint": "eslint react/**/*.js",
     "test": "cross-env NODE_ENV=test jest",
     "build": "cross-env NODE_ENV=production rollup -c",
-    "build:link": "npm link && watch 'npm run build' src",
+    "build:link": "npm link && watch 'npm run build' react",
     "prepublishOnly": "npm run build"
   },
   "keywords": [],
@@ -44,7 +44,8 @@
       "^.+\\.(js|jsx|mjs)$": "<rootDir>/node_modules/babel-jest"
     },
     "transformIgnorePatterns": [
-      "[/\\\\]node_modules[/\\\\].+\\.(js|jsx|mjs)$"
+      "[/\\\\]node_modules[/\\\\].+\\.(js|jsx|mjs)$",
+      "react/[/\\\\]node_modules[/\\\\].+\\.(js|jsx|mjs)$"
     ]
   },
   "dependencies": {

@@ -1,0 +1,7 @@
+{
+  "name": "@vtex/lean-shipping-calculator",
+  "dependencies": {
+    "@vtex/estimate-calculator": "1.0.7",
+    "lodash": "^4.17.5"
+  }
+}
