@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Update conditions to select scheduled delivery
+- Transpose component to VTEX IO maintaining support for npm package
 - Update unit tests
 - Add CHANGELOG.md
 - Add github templates
