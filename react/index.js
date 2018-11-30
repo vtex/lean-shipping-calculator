@@ -4,7 +4,7 @@ import minBy from 'lodash/minBy'
 import isEqual from 'lodash/isEqual'
 import omit from 'lodash/omit'
 import { getStructuredOption } from './DeliveryPackagesUtils'
-import { CHEAPEST, COMBINED, FASTEST, PICKUP_IN_STORE } from './constants'
+import { CHEAPEST, COMBINED, FASTEST, DELIVERY } from './constants'
 import {
   hasDeliveryWindows,
   hasOnlyScheduledDelivery,
@@ -40,7 +40,7 @@ function filterEqualOptions(options) {
   return filterPreviousExpensiveOptions(finalOptions)
 }
 
-function getOptionsDetails(delivery) {
+export function getOptionsDetails(delivery) {
   const hasCheapest = delivery[CHEAPEST] && delivery[CHEAPEST].length > 0
   const hasCombined = delivery[COMBINED] && delivery[COMBINED].length > 0
   const hasFastest = delivery[FASTEST] && delivery[FASTEST].length > 0
@@ -54,7 +54,7 @@ function getOptionsDetails(delivery) {
   return filterEqualOptions(options)
 }
 
-function getSelectedDeliveryOption({
+export function getSelectedDeliveryOption({
   optionsDetails = null,
   newCombined,
   newFastest,
@@ -78,11 +78,11 @@ function getSelectedDeliveryOption({
     : activeDeliveryOption
 }
 
-function filterSlasByChannel(slas) {
+function filterSlasByChannel(slas, isScheduledDeliveryActive) {
   if (!slas) return
 
   return slas.filter(sla =>
-    hasOnlyScheduledDelivery(slas)
+    hasOnlyScheduledDelivery(slas) || isScheduledDeliveryActive
       ? isDelivery(sla)
       : isDelivery(sla) && !hasDeliveryWindows(sla)
   )
@@ -107,9 +107,12 @@ function createArrayOfSlasObject(slas, logisticsInfo) {
   }))
 }
 
-function createArraysOfSlas(logisticsInfo) {
+function createArraysOfSlas(logisticsInfo, isScheduledDeliveryActive) {
   return logisticsInfo.map(item => {
-    const filteredByChannel = filterSlasByChannel(item.slas)
+    const filteredByChannel = filterSlasByChannel(
+      item.slas,
+      isScheduledDeliveryActive
+    )
 
     return filteredByChannel.length
       ? createArrayOfSlasObject(filteredByChannel, logisticsInfo)
@@ -130,8 +133,17 @@ function findLogisticsInfoWithSameId(logisticsInfo, currentLi, index) {
   )
 }
 
-function setSelectedSla(logisticsInfo, selectedSlas, activeChannel) {
+function setSelectedSla({
+  logisticsInfo,
+  selectedSlas,
+  activeChannel,
+  isScheduledDeliveryActive,
+}) {
   const newLogisticsInfo = []
+
+  const hasItemWithMandatoryScheduledDelivery = logisticsInfo.some(li =>
+    li.slas.every(sla => hasDeliveryWindows(sla))
+  )
 
   logisticsInfo.forEach((logisticsItem, index) => {
     if (
@@ -139,6 +151,28 @@ function setSelectedSla(logisticsInfo, selectedSlas, activeChannel) {
       (isPickup(logisticsItem) && isPickup(activeChannel))
     ) {
       newLogisticsInfo.push(logisticsItem)
+
+      return
+    }
+
+    const hasMandatoryScheduledDelivery = logisticsItem.slas.every(sla =>
+      hasDeliveryWindows(sla)
+    )
+
+    const scheduledDelivery = logisticsItem.slas.find(sla =>
+      hasDeliveryWindows(sla)
+    )
+
+    if (
+      ((isScheduledDeliveryActive || hasMandatoryScheduledDelivery) &&
+        scheduledDelivery) ||
+      (hasItemWithMandatoryScheduledDelivery && scheduledDelivery)
+    ) {
+      newLogisticsInfo.push({
+        ...logisticsItem,
+        selectedSla: scheduledDelivery.id,
+        selectedDeliveryChannel: scheduledDelivery.deliveryChannel,
+      })
 
       return
     }
@@ -284,44 +318,49 @@ function shouldShowFastest(cheapest, fastest) {
   return fastest && !fastestAndCheapestAreEqual
 }
 
-function getLeanShippingOptions(logisticsInfo, activeChannel) {
-  const arraysOfSlas = createArraysOfSlas(logisticsInfo)
+export function getLeanShippingOptions({
+  logisticsInfo,
+  activeChannel = DELIVERY,
+  isScheduledDeliveryActive = false,
+}) {
+  const arraysOfSlas = createArraysOfSlas(
+    logisticsInfo,
+    isScheduledDeliveryActive
+  )
   const selectedSlas = {
     cheapest: getMinSlaBy(arraysOfSlas, 'price'),
     fastest: getMinSlaBy(arraysOfSlas, 'shippingEstimateInSeconds'),
   }
 
-  const cheapest = setSelectedSla(
+  const cheapest = setSelectedSla({
     logisticsInfo,
-    selectedSlas.cheapest,
-    activeChannel
-  )
-  const fastest = setSelectedSla(
+    selectedSlas: selectedSlas.cheapest,
+    activeChannel,
+    isScheduledDeliveryActive,
+  })
+
+  const fastest = setSelectedSla({
     logisticsInfo,
-    selectedSlas.fastest,
-    activeChannel
-  )
+    selectedSlas: selectedSlas.fastest,
+    activeChannel,
+    isScheduledDeliveryActive,
+  })
 
   const fastestAndCheapestAreEqual = isEqual(cheapest, fastest)
 
   let combined // eslint-disable-line
 
   if (!fastestAndCheapestAreEqual) {
-    combined = setSelectedSla(
+    combined = setSelectedSla({
       logisticsInfo,
-      selectedSlas.fastest,
-      activeChannel
-    )
+      selectedSlas: selectedSlas.fastest,
+      activeChannel,
+      isScheduledDeliveryActive,
+    })
   }
 
   return {
     ...(shouldShowCheapest(cheapest, fastest) ? { cheapest } : {}),
     ...(shouldShowFastest(cheapest, fastest) ? { fastest } : {}),
   }
-}
-
-module.exports = {
-  getLeanShippingOptions,
-  getOptionsDetails,
-  getSelectedDeliveryOption,
 }
