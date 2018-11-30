@@ -1,0 +1,21 @@
+{
+  "name": "lean-shipping-calculator",
+  "vendor": "vtex",
+  "version": "0.1.0",
+  "title": "Checkout's Lean Shipping Calculator",
+  "description": "Checkout's Lean Shipping Calculator",
+  "defaultLocale": "en",
+  "mustUpdateAt": "2019-01-08",
+  "categories": [],
+  "registries": [
+    "smartcheckout"
+  ],
+  "settingsSchema": {},
+  "dependencies": {},
+  "builders": {
+    "react": "2.x"
+  },
+  "scripts": {
+    "postreleasy": "vtex publish --public"
+  }
+}

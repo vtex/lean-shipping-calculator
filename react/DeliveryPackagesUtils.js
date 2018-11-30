@@ -219,14 +219,16 @@ function convertShippingEstimateToSeconds(sla) {
 }
 
 function getTotalEstimate(leanOption) {
-  return leanOption.filter(li => isDelivery(li)).reduce((acc, currentItem) => {
-    const selectedSla = getSelectedSlaInSlas(currentItem)
+  return leanOption
+    .filter(li => isDelivery(li))
+    .reduce((acc, currentItem) => {
+      const selectedSla = getSelectedSlaInSlas(currentItem)
 
-    return (
-      (selectedSla && acc + convertShippingEstimateToSeconds(selectedSla)) ||
-      acc + 0
-    )
-  }, 0)
+      return (
+        (selectedSla && acc + convertShippingEstimateToSeconds(selectedSla)) ||
+        acc + 0
+      )
+    }, 0)
 }
 
 function getAverageEstimate(leanOption) {
