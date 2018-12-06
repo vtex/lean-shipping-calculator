@@ -168,10 +168,23 @@ function setSelectedSla({
         scheduledDelivery) ||
       (hasItemWithMandatoryScheduledDelivery && scheduledDelivery)
     ) {
+      const selectedSla = logisticsItem.slas.find(
+        sla => sla.id === logisticsItem.selectedSla
+      )
+
+      const shouldUseSelectedSla =
+        !hasMandatoryScheduledDelivery &&
+        selectedSla &&
+        hasDeliveryWindows(selectedSla)
+
       newLogisticsInfo.push({
         ...logisticsItem,
-        selectedSla: scheduledDelivery.id,
-        selectedDeliveryChannel: scheduledDelivery.deliveryChannel,
+        selectedSla: shouldUseSelectedSla
+          ? selectedSla.id
+          : scheduledDelivery.id,
+        selectedDeliveryChannel: shouldUseSelectedSla
+          ? selectedSla.deliveryChannel
+          : scheduledDelivery.deliveryChannel,
       })
 
       return
