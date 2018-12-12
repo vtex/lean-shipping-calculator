@@ -6,6 +6,7 @@ import { SAME_ID_LOGISTICS_INFO } from './fixtures/logisticsInfo-sameId'
 import {
   SCHEDULED_DELIVERY_LOGISTICS_INFO,
   MANDATORY_SCHEDULED_DELIVERY_LOGISTICS_INFO,
+  MULTIPLE_MANDATORY_SCHEDULED_DELIVERY_LOGISTICS_INFO,
 } from './fixtures/logisticsInfo-scheduled-delivery'
 import { DIFFERENT_SCHEDULED_DELIVERY_LOGISTICS_INFO } from './fixtures/logisticsInfo-different-scheduled-delivery'
 
@@ -153,6 +154,32 @@ describe('Check if getLeanShippingOptions', () => {
         },
         {
           selectedSla: 'Expressa',
+        },
+      ],
+    }
+
+    expect(result.cheapest[0].selectedSla).toEqual(
+      expectedResult.cheapest[0].selectedSla
+    )
+    expect(result.cheapest[1].selectedSla).toEqual(
+      expectedResult.cheapest[1].selectedSla
+    )
+    expect(result.fastest).toBeUndefined()
+  })
+
+  it('should maintain selected scheduled delivery', () => {
+    const result = getLeanShippingOptions({
+      logisticsInfo: MULTIPLE_MANDATORY_SCHEDULED_DELIVERY_LOGISTICS_INFO,
+      activeChannel: DELIVERY,
+    })
+
+    const expectedResult = {
+      cheapest: [
+        {
+          selectedSla: 'outra agendada',
+        },
+        {
+          selectedSla: 'outra agendada',
         },
       ],
     }

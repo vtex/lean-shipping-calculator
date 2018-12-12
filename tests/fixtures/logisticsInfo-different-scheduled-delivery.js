@@ -1,7 +1,7 @@
 const DIFFERENT_SCHEDULED_DELIVERY_LOGISTICS_INFO = [
   {
     itemIndex: 0,
-    selectedSla: '',
+    selectedSla: 'agendada',
     selectedDeliveryChannel: '',
     addressId: '62e1db5500824a66bcef708d09388a8e',
     slas: [
@@ -45,7 +45,7 @@ const DIFFERENT_SCHEDULED_DELIVERY_LOGISTICS_INFO = [
   },
   {
     itemIndex: 1,
-    selectedSla: '',
+    selectedSla: 'outra agendada',
     selectedDeliveryChannel: '',
     addressId: '62e1db5500824a66bcef708d09388a8e',
     slas: [

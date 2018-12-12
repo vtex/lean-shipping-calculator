@@ -155,9 +155,9 @@ function setSelectedSla({
       return
     }
 
-    const hasMandatoryScheduledDelivery = logisticsItem.slas.every(sla =>
-      hasDeliveryWindows(sla)
-    )
+    const hasMandatoryScheduledDelivery =
+      logisticsItem.slas.length === 1 &&
+      logisticsItem.slas.every(sla => hasDeliveryWindows(sla))
 
     const scheduledDelivery = logisticsItem.slas.find(sla =>
       hasDeliveryWindows(sla)
