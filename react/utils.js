@@ -43,3 +43,8 @@ export function hasSLAs(slasSource) {
 export function getSelectedSlaInSlas(item) {
   return item.slas && item.slas.find(sla => sla.id === item.selectedSla)
 }
+
+export function isCurrentChannel(deliveryChannelSource, currentChannel) {
+  const deliveryChannel = getDeliveryChannel(deliveryChannelSource)
+  return deliveryChannel === currentChannel
+}
