@@ -7,9 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.3] - 2019-01-04
+
+### Changed
+
+- Filter SLAs per current channel
+
 ## [0.1.2] - 2018-12-12
 
+### Changed
+
+- Fix behavior when selecting multiple scheduled deliveries
+
 ## [0.1.1] - 2018-12-06
+
+### Changed
+
+- Mantain scheduled delivery if is already selected
 
 ## [0.1.0] - 2018-11-30
 

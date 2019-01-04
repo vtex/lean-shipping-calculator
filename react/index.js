@@ -10,6 +10,7 @@ import {
   hasOnlyScheduledDelivery,
   isPickup,
   isDelivery,
+  isCurrentChannel,
 } from './utils'
 
 function getShippingEstimateInSeconds(shippingEstimate) {
@@ -157,10 +158,12 @@ function setSelectedSla({
 
     const hasMandatoryScheduledDelivery =
       logisticsItem.slas.length === 1 &&
-      logisticsItem.slas.every(sla => hasDeliveryWindows(sla))
+      logisticsItem.slas.every(
+        sla => isCurrentChannel(sla, activeChannel) && hasDeliveryWindows(sla)
+      )
 
-    const scheduledDelivery = logisticsItem.slas.find(sla =>
-      hasDeliveryWindows(sla)
+    const scheduledDelivery = logisticsItem.slas.find(
+      sla => isCurrentChannel(sla, activeChannel) && hasDeliveryWindows(sla)
     )
 
     if (
