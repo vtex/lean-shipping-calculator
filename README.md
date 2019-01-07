@@ -12,7 +12,7 @@ $ npm install @vtex/lean-shipping-calculator -S
 
 ## API
 
-### getLeanShippingOptions(logisticsInfo, activeChannel)
+### getLeanShippingOptions({ logisticsInfo, activeChannel, isScheduledDeliveryActive })
 
 Returns lean shipping options (cheapest, fastest and combined)
 
@@ -24,9 +24,15 @@ Logistics info for each item
 
 #### activeChannel
 
-Type: `String`
+Type: `String` <br/>
+Default: `delivery`
 
 Active channel
+
+#### isScheduledDeliveryActive
+
+Type: `boolean` <br/>
+Default: `false`
 
 ---
 
@@ -63,10 +69,10 @@ Return all options are only returned if they are worthy according to the calcula
 ```js
 const leanShippingCalculator = require('@vtex/lean-shipping-calculator')
 
-const options = leanShippingCalculator.getLeanShippingOptions(
+const options = leanShippingCalculator.getLeanShippingOptions({
   logisticsInfo,
   activeChannel
-)
+})
 
 console.log(options)
 // {
