@@ -182,7 +182,7 @@ export function getCheapestCombination(logisticsInfo) {
 function getLatestSLAEstimate(option) {
   const latestSla = estimateCalculator.getLatestSla(
     option
-      .filter(li => (!!li.selectedSla || hasSLAs(li)) && isDelivery(li))
+      .filter(li => !!li.selectedSla && hasSLAs(li) && isDelivery(li))
       .map(li => getSelectedSlaInSlas(li))
   )
 
