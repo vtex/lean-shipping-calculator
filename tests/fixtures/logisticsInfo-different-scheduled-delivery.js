@@ -36,7 +36,7 @@ const DIFFERENT_SCHEDULED_DELIVERY_LOGISTICS_INFO = [
       },
     ],
     shipsTo: ['BRA'],
-    itemId: '100006785',
+    itemId: '100006786',
     deliveryChannels: [
       {
         id: 'delivery',

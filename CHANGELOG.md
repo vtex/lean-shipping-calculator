@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.5] - 2019-02-04
+
+### Fixed
+
+- Item selection from `itemId` to `itemIndex`
+
 ## [0.1.4] - 2019-01-11
 
 ### Fixed

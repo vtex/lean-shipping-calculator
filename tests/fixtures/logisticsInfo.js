@@ -65,7 +65,7 @@ const BASE_LOGISTICS_INFO = [
       },
     ],
     shipsTo: ['BRA'],
-    itemId: '100006784',
+    itemId: '100006785',
     deliveryChannels: [
       {
         id: 'delivery',
@@ -141,7 +141,7 @@ const BASE_LOGISTICS_INFO = [
       },
     ],
     shipsTo: ['BRA'],
-    itemId: '100006786',
+    itemId: '100006785',
     deliveryChannels: [
       {
         id: 'delivery',
