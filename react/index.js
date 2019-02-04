@@ -130,7 +130,8 @@ function isUnavailable(logisticsInfo) {
 
 function findLogisticsInfoWithSameId(logisticsInfo, currentLi, index) {
   return logisticsInfo.find(
-    (li, localIndex) => li.itemId === currentLi.itemId && localIndex < index
+    (li, localIndex) =>
+      li.itemIndex === currentLi.itemIndex && localIndex < index
   )
 }
 
