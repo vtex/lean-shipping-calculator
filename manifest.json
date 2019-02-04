@@ -1,7 +1,7 @@
 {
   "name": "lean-shipping-calculator",
   "vendor": "vtex",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "title": "Checkout's Lean Shipping Calculator",
   "description": "Checkout's Lean Shipping Calculator",
   "defaultLocale": "en",
