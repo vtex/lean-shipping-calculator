@@ -13,7 +13,7 @@
   "settingsSchema": {},
   "dependencies": {},
   "builders": {
-    "react": "2.x"
+    "react": "3.x"
   },
   "scripts": {
     "postreleasy": "vtex publish --public"
