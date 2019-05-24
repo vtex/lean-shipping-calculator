@@ -11,11 +11,14 @@
     "smartcheckout"
   ],
   "settingsSchema": {},
-  "dependencies": {},
+  "dependencies": {
+    "vtex.address-form": "3.x"
+  },
   "builders": {
     "react": "2.x"
   },
   "scripts": {
     "postreleasy": "vtex publish --public"
-  }
+  },
+  "$schema": "https://raw.githubusercontent.com/vtex/node-vtex-api/master/gen/manifest.schema"
 }
