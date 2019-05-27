@@ -20,6 +20,7 @@ export function getNewLogisticsInfoIfPickup({
   const noSlas = logisticsInfo.slas.length === 0
 
   if (
+    firstPickupSla &&
     findChannelById(logisticsInfo, channel) &&
     firstPickupSla.deliveryChannel === DELIVERY
   ) {
@@ -27,6 +28,7 @@ export function getNewLogisticsInfoIfPickup({
   }
 
   if (
+    firstPickupSla &&
     findChannelById(logisticsInfo, firstPickupSla.deliveryChannel) &&
     firstPickupSla.deliveryChannel === DELIVERY
   ) {
@@ -44,6 +46,9 @@ export function getNewLogisticsInfoIfPickup({
     return {
       ...logisticsInfo,
       selectedDeliveryChannel: channel,
+      addressId: isPickup(channel)
+        ? actionSearchAddress.addressId
+        : actionAddress.addressId,
     }
   }
 

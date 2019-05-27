@@ -230,7 +230,7 @@ function getGreaterThanIndex(averages, index) {
   return averages.map(details => details > index)
 }
 
-function getCombinedOption( // eslint-disable-line
+export function getCombinedOption(
   logisticsInfo,
   slasCombinations,
   combinationsDetails,
@@ -325,6 +325,19 @@ function shouldShowCheapest(cheapest, fastest) {
   )
 }
 
+function shouldShowCombined(cheapest, fastest, combined) {
+  const cheapestDetails = getStructuredOption(cheapest, CHEAPEST)
+
+  const fastestDetails = getStructuredOption(fastest, FASTEST)
+
+  const combinedDetails = getStructuredOption(combined, COMBINED)
+
+  return (
+    !isEqual(combinedDetails, cheapestDetails) &&
+    !isEqual(combinedDetails, fastestDetails)
+  )
+}
+
 function shouldShowFastest(cheapest, fastest) {
   const fastestAndCheapestAreEqual = isEqual(cheapest, fastest)
 
@@ -361,7 +374,7 @@ export function getLeanShippingOptions({
 
   const fastestAndCheapestAreEqual = isEqual(cheapest, fastest)
 
-  let combined // eslint-disable-line
+  let combined = []
 
   if (!fastestAndCheapestAreEqual) {
     combined = setSelectedSla({
@@ -374,6 +387,7 @@ export function getLeanShippingOptions({
 
   return {
     ...(shouldShowCheapest(cheapest, fastest) ? { cheapest } : {}),
+    ...(shouldShowCombined(cheapest, fastest, combined) ? { combined } : {}),
     ...(shouldShowFastest(cheapest, fastest) ? { fastest } : {}),
   }
 }

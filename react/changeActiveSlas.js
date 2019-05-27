@@ -4,9 +4,11 @@ import {
   findPickupSla,
   isFromCurrentSeller,
   hasSLAs,
-  setSelectedDeliveryChannel,
+  isPickup,
 } from './utils'
 import { getNewLogisticsInfo } from './logisticsInfo'
+import { helpers } from 'vtex.address-form'
+const { removeValidation } = helpers
 
 export function setSelectedSlaFromSlaOption({
   logisticsInfo,
@@ -34,7 +36,7 @@ export function setSelectedSlaFromSlaOption({
 
     const firstPickupSla = slaOption
       ? findSlaOption(filteredLogisticsInfo, slaOption)
-      : findPickupSla(firstItemWithPickup)
+      : firstItemWithPickup && findPickupSla(firstItemWithPickup)
 
     newLogisticsInfo = getNewLogisticsInfo({
       action,
@@ -48,8 +50,18 @@ export function setSelectedSlaFromSlaOption({
     })
   })
 
-  if (!hasSLAs(logisticsInfo)) {
-    newLogisticsInfo = setSelectedDeliveryChannel(channel)
+  const actionAddress = removeValidation(action.address)
+  const actionSearchAddress = removeValidation(action.searchAddress)
+  const hasSlas = logisticsInfo && !!logisticsInfo.find(li => hasSLAs(li))
+
+  if (newLogisticsInfo && !hasSlas) {
+    newLogisticsInfo = newLogisticsInfo.map(li => ({
+      ...li,
+      selectedDeliveryChannel: channel,
+      addressId: isPickup(channel)
+        ? actionSearchAddress.addressId
+        : actionAddress.addressId,
+    }))
   }
 
   return newLogisticsInfo
@@ -79,7 +91,7 @@ export function changeActiveSlas({
 
     const firstPickupSla = slaOption
       ? findSlaOption(filteredLogisticsInfo, slaOption)
-      : findPickupSla(firstItemWithPickup)
+      : firstItemWithPickup && findPickupSla(firstItemWithPickup)
 
     newLogisticsInfo = getNewLogisticsInfo({
       action,
@@ -92,15 +104,18 @@ export function changeActiveSlas({
     })
   })
 
+  const actionAddress = removeValidation(action.address)
+  const actionSearchAddress = removeValidation(action.searchAddress)
   const hasSlas = logisticsInfo && !!logisticsInfo.find(li => hasSLAs(li))
 
-  if (!hasSlas) {
-    newLogisticsInfo =
-      newLogisticsInfo &&
-      newLogisticsInfo.map(li => ({
-        ...li,
-        selectedDeliveryChannel: channel,
-      }))
+  if (newLogisticsInfo && !hasSlas) {
+    newLogisticsInfo = newLogisticsInfo.map(li => ({
+      ...li,
+      selectedDeliveryChannel: channel,
+      addressId: isPickup(channel)
+        ? actionSearchAddress.addressId
+        : actionAddress.addressId,
+    }))
   }
 
   return newLogisticsInfo
