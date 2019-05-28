@@ -1,4 +1,5 @@
-import { getLeanShippingOptions } from '../react/index'
+import { getLeanShippingOptions } from '../react/leanShipping'
+
 import { DELIVERY } from '../react/constants'
 import { BASE_LOGISTICS_INFO } from './fixtures/logisticsInfo'
 import { SAME_ID_LOGISTICS_INFO } from './fixtures/logisticsInfo-sameId'

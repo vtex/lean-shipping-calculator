@@ -1,6 +1,6 @@
 {
   "name": "@vtex/lean-shipping-calculator",
-  "version": "0.1.5",
+  "version": "0.2.0",
   "description": "",
   "main": "lib/index.js",
   "module": "lib/index.esm.js",
@@ -19,6 +19,7 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
+    "@vtex/address-form": "3.0.2",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.2.2",
@@ -52,6 +53,7 @@
     ]
   },
   "dependencies": {
+    "@vtex/delivery-packages": "^2.17.0",
     "@vtex/estimate-calculator": "1.0.7",
     "lodash": "^4.17.5"
   },

@@ -1,6 +1,7 @@
 import isString from 'lodash/isString'
 import get from 'lodash/get'
 import { PICKUP_IN_STORE, DELIVERY } from './constants'
+import { findSlaWithChannel } from '@vtex/delivery-packages/dist/sla'
 
 function getDeliveryChannel(deliveryChannelSource) {
   if (isString(deliveryChannelSource)) {
@@ -47,4 +48,68 @@ export function getSelectedSlaInSlas(item) {
 export function isCurrentChannel(deliveryChannelSource, currentChannel) {
   const deliveryChannel = getDeliveryChannel(deliveryChannelSource)
   return deliveryChannel === currentChannel
+}
+
+export function isFromCurrentSeller({ items, li, seller, sellerId }) {
+  const localSellerId = isString(sellerId) ? sellerId : seller && seller.id
+  return (
+    li && items[li.itemIndex] && items[li.itemIndex].seller === localSellerId
+  )
+}
+
+export function findPickupSla(firstItemWithPickup) {
+  const selectedSla = getSelectedSlaInSlas(firstItemWithPickup)
+  const selectedSlaIsPickup = selectedSla && isPickup(selectedSla)
+
+  if (selectedSlaIsPickup) {
+    return selectedSla
+  }
+
+  return (
+    firstItemWithPickup &&
+    findSlaWithChannel(firstItemWithPickup, PICKUP_IN_STORE)
+  )
+}
+
+export function findSlaOption(logisticsInfo, slaOption) {
+  const logisticsInfoWithSla = logisticsInfo.find(li =>
+    li.slas.find(sla => sla.id === slaOption)
+  )
+
+  return (
+    logisticsInfoWithSla &&
+    logisticsInfoWithSla.slas.find(sla => sla.id === slaOption)
+  )
+}
+
+export function findFirstItemWithPickup({ logisticsInfo, seller, items }) {
+  return (
+    logisticsInfo &&
+    logisticsInfo.find(li => {
+      const hasSellerIdMatch = seller
+        ? isFromCurrentSeller({ items, li, seller })
+        : true
+
+      const hasPickupSelectedOrHasPickupInSlas =
+        isPickup(li) || findSlaWithChannel(li, PICKUP_IN_STORE)
+
+      return hasSellerIdMatch && hasPickupSelectedOrHasPickupInSlas
+    })
+  )
+}
+
+export function setSelectedDeliveryChannel(logisticsInfo, deliveryChannel) {
+  if (Array.isArray(logisticsInfo)) {
+    return logisticsInfo.map(li => ({
+      ...li,
+      selectedDeliveryChannel: deliveryChannel,
+    }))
+  }
+
+  return (
+    logisticsInfo && {
+      ...logisticsInfo,
+      selectedDeliveryChannel: deliveryChannel,
+    }
+  )
 }
