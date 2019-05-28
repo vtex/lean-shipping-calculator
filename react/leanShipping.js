@@ -326,11 +326,11 @@ function shouldShowCheapest(cheapest, fastest) {
 }
 
 function shouldShowCombined(cheapest, fastest, combined) {
-  const cheapestDetails = getStructuredOption(cheapest, CHEAPEST)
+  const cheapestDetails = getStructuredOption(cheapest)
 
-  const fastestDetails = getStructuredOption(fastest, FASTEST)
+  const fastestDetails = getStructuredOption(fastest)
 
-  const combinedDetails = getStructuredOption(combined, COMBINED)
+  const combinedDetails = getStructuredOption(combined)
 
   return (
     !isEqual(combinedDetails, cheapestDetails) &&

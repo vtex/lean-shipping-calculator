@@ -243,6 +243,6 @@ export function getStructuredOption(option, optionString) {
     shippingEstimate: getLatestSLAEstimate(option),
     averageEstimatePerItem: getAverageEstimate(option),
     packagesLength: getPackagesLength(option),
-    id: optionString,
+    ...(optionString ? { id: optionString } : {}),
   }
 }
