@@ -4,5 +4,8 @@
     "@vtex/delivery-packages": "^2.17.0",
     "@vtex/estimate-calculator": "1.0.7",
     "lodash": "^4.17.5"
+  },
+  "devDependencies": {
+    "@vtex/address-form": "^3.5.12"
   }
 }

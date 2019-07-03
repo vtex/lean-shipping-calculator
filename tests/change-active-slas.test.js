@@ -10,17 +10,20 @@ import {
   PICKUP_SELECTED_LOGISTICS_INFO,
   MULTIPLE_SELLERS_LOGISTICS_INFO,
 } from './fixtures/logisticsInfo-changeActiveSlas'
+
 describe('changeActiveSlas', () => {
   it('simple switch with no SLAs', () => {
     const logisticsInfo = ONLY_DELIVERY_NO_SLAS_LOGISTICS_INFO
     const action = {
       address: {
-        addressId: 'residentialId',
-        addressType: 'residential',
+        addressId: { value: 'residentialId' },
+        addressType: { value: 'residential' },
+        postalCode: { value: 'testPostalCode' },
       },
       searchAddress: {
-        addressId: 'searchId',
-        addressType: 'search',
+        addressId: { value: 'searchId' },
+        addressType: { value: 'search' },
+        postalCode: { value: 'testPostalCode' },
       },
     }
     const items = [{ seller: '1' }]
@@ -58,12 +61,14 @@ describe('changeActiveSlas', () => {
     const logisticsInfo = ONLY_DELIVERY_LOGISTICS_INFO
     const action = {
       address: {
-        addressId: 'residentialId',
-        addressType: 'residential',
+        addressId: { value: 'residentialId' },
+        addressType: { value: 'residential' },
+        postalCode: { value: 'testPostalCode' },
       },
       searchAddress: {
-        addressId: 'searchId',
-        addressType: 'search',
+        addressId: { value: 'searchId' },
+        addressType: { value: 'search' },
+        postalCode: { value: 'testPostalCode' },
       },
     }
     const items = [{ seller: '1' }]
@@ -81,20 +86,22 @@ describe('changeActiveSlas', () => {
       slaOption,
     })
 
-    expect(result[0].selectedDeliveryChannel).toEqual(DELIVERY)
-    expect(result[0].addressId).toEqual('residentialId')
+    expect(result[0].selectedDeliveryChannel).toEqual(PICKUP_IN_STORE)
+    expect(result[0].addressId).toEqual('searchId')
   })
 
   it('switch with one logistics info with both Delivery Channels and has slas', () => {
     const logisticsInfo = DELIVERY_PICKUP_LOGISTICS_INFO
     const action = {
       address: {
-        addressId: 'residentialId',
-        addressType: 'residential',
+        addressId: { value: 'residentialId' },
+        addressType: { value: 'residential' },
+        postalCode: { value: 'testPostalCode' },
       },
       searchAddress: {
-        addressId: 'searchId',
-        addressType: 'search',
+        addressId: { value: 'searchId' },
+        addressType: { value: 'search' },
+        postalCode: { value: 'testPostalCode' },
       },
     }
     const items = [{ seller: '1' }]
@@ -121,12 +128,14 @@ describe('changeActiveSlas', () => {
     const logisticsInfo = PICKUP_SELECTED_LOGISTICS_INFO
     const action = {
       address: {
-        addressId: 'residentialId',
-        addressType: 'residential',
+        addressId: { value: 'residentialId' },
+        addressType: { value: 'residential' },
+        postalCode: { value: 'testPostalCode' },
       },
       searchAddress: {
-        addressId: 'searchId',
-        addressType: 'search',
+        addressId: { value: 'searchId' },
+        addressType: { value: 'search' },
+        postalCode: { value: 'testPostalCode' },
       },
     }
     const items = [{ seller: '1' }]
@@ -153,12 +162,14 @@ describe('changeActiveSlas', () => {
     const logisticsInfo = MULTIPLE_SELLERS_LOGISTICS_INFO
     const action = {
       address: {
-        addressId: 'residentialId',
-        addressType: 'residential',
+        addressId: { value: 'residentialId' },
+        addressType: { value: 'residential' },
+        postalCode: { value: 'testPostalCode' },
       },
       searchAddress: {
-        addressId: 'searchId',
-        addressType: 'search',
+        addressId: { value: 'searchId' },
+        addressType: { value: 'search' },
+        postalCode: { value: 'testPostalCode' },
       },
     }
     const items = [{ seller: '1' }, { seller: '2' }]
@@ -190,12 +201,14 @@ describe('setSelectedSlaFromSlaOption', () => {
     const logisticsInfo = ONLY_DELIVERY_NO_SLAS_LOGISTICS_INFO
     const action = {
       address: {
-        addressId: 'residentialId',
-        addressType: 'residential',
+        addressId: { value: 'residentialId' },
+        addressType: { value: 'residential' },
+        postalCode: { value: 'testPostalCode' },
       },
       searchAddress: {
-        addressId: 'searchId',
-        addressType: 'search',
+        addressId: { value: 'searchId' },
+        addressType: { value: 'search' },
+        postalCode: { value: 'testPostalCode' },
       },
     }
     const items = [{ seller: '1' }]
@@ -233,12 +246,14 @@ describe('setSelectedSlaFromSlaOption', () => {
     const logisticsInfo = ONLY_DELIVERY_LOGISTICS_INFO
     const action = {
       address: {
-        addressId: 'residentialId',
-        addressType: 'residential',
+        addressId: { value: 'residentialId' },
+        addressType: { value: 'residential' },
+        postalCode: { value: 'testPostalCode' },
       },
       searchAddress: {
-        addressId: 'searchId',
-        addressType: 'search',
+        addressId: { value: 'searchId' },
+        addressType: { value: 'search' },
+        postalCode: { value: 'testPostalCode' },
       },
     }
     const items = [{ seller: '1' }]
@@ -256,20 +271,22 @@ describe('setSelectedSlaFromSlaOption', () => {
       slaOption,
     })
 
-    expect(result[0].selectedDeliveryChannel).toEqual(DELIVERY)
-    expect(result[0].addressId).toEqual('residentialId')
+    expect(result[0].selectedDeliveryChannel).toEqual(PICKUP_IN_STORE)
+    expect(result[0].addressId).toEqual('searchId')
   })
 
   it('switch with one logistics info with both Delivery Channels and has slas', () => {
     const logisticsInfo = DELIVERY_PICKUP_LOGISTICS_INFO
     const action = {
       address: {
-        addressId: 'residentialId',
-        addressType: 'residential',
+        addressId: { value: 'residentialId' },
+        addressType: { value: 'residential' },
+        postalCode: { value: 'testPostalCode' },
       },
       searchAddress: {
-        addressId: 'searchId',
-        addressType: 'search',
+        addressId: { value: 'searchId' },
+        addressType: { value: 'search' },
+        postalCode: { value: 'testPostalCode' },
       },
     }
     const items = [{ seller: '1' }]
@@ -296,12 +313,14 @@ describe('setSelectedSlaFromSlaOption', () => {
     const logisticsInfo = PICKUP_SELECTED_LOGISTICS_INFO
     const action = {
       address: {
-        addressId: 'residentialId',
-        addressType: 'residential',
+        addressId: { value: 'residentialId' },
+        addressType: { value: 'residential' },
+        postalCode: { value: 'testPostalCode' },
       },
       searchAddress: {
-        addressId: 'searchId',
-        addressType: 'search',
+        addressId: { value: 'searchId' },
+        addressType: { value: 'search' },
+        postalCode: { value: 'testPostalCode' },
       },
     }
     const items = [{ seller: '1' }]
@@ -328,12 +347,14 @@ describe('setSelectedSlaFromSlaOption', () => {
     const logisticsInfo = MULTIPLE_SELLERS_LOGISTICS_INFO
     const action = {
       address: {
-        addressId: 'residentialId',
-        addressType: 'residential',
+        addressId: { value: 'residentialId' },
+        addressType: { value: 'residential' },
+        postalCode: { value: 'testPostalCode' },
       },
       searchAddress: {
-        addressId: 'searchId',
-        addressType: 'search',
+        addressId: { value: 'searchId' },
+        addressType: { value: 'search' },
+        postalCode: { value: 'testPostalCode' },
       },
     }
     const items = [{ seller: '1' }, { seller: '2' }]
