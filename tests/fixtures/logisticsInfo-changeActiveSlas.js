@@ -68,6 +68,53 @@ const DELIVERY_PICKUP_LOGISTICS_INFO = [
   },
 ]
 
+const MULTIPLE_DELIVERY_PICKUP_LOGISTICS_INFO = [
+  {
+    addressId: 'residentialId',
+    itemIndex: 0,
+    selectedDeliveryChannel: DELIVERY,
+    deliveryChannels: [
+      {
+        id: DELIVERY,
+      },
+      {
+        id: PICKUP_IN_STORE,
+      },
+    ],
+    slas: [
+      {
+        id: 'deliverySLA',
+        deliveryChannel: DELIVERY,
+      },
+      {
+        id: 'pickupSla',
+        deliveryChannel: PICKUP_IN_STORE,
+      },
+    ],
+    selectedSla: 'deliverySLA',
+  },
+  {
+    addressId: 'residentialId',
+    itemIndex: 0,
+    selectedDeliveryChannel: DELIVERY,
+    deliveryChannels: [
+      {
+        id: DELIVERY,
+      },
+      {
+        id: PICKUP_IN_STORE,
+      },
+    ],
+    slas: [
+      {
+        id: 'deliverySLA',
+        deliveryChannel: DELIVERY,
+      },
+    ],
+    selectedSla: 'deliverySLA',
+  },
+]
+
 const PICKUP_SELECTED_LOGISTICS_INFO = [
   {
     addressId: 'residentialId',
@@ -156,4 +203,5 @@ module.exports = {
   DELIVERY_PICKUP_LOGISTICS_INFO,
   PICKUP_SELECTED_LOGISTICS_INFO,
   MULTIPLE_SELLERS_LOGISTICS_INFO,
+  MULTIPLE_DELIVERY_PICKUP_LOGISTICS_INFO,
 }
