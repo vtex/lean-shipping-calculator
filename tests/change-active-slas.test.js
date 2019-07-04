@@ -9,6 +9,7 @@ import {
   DELIVERY_PICKUP_LOGISTICS_INFO,
   PICKUP_SELECTED_LOGISTICS_INFO,
   MULTIPLE_SELLERS_LOGISTICS_INFO,
+  MULTIPLE_DELIVERY_PICKUP_LOGISTICS_INFO,
 } from './fixtures/logisticsInfo-changeActiveSlas'
 
 describe('changeActiveSlas', () => {
@@ -86,8 +87,8 @@ describe('changeActiveSlas', () => {
       slaOption,
     })
 
-    expect(result[0].selectedDeliveryChannel).toEqual(PICKUP_IN_STORE)
-    expect(result[0].addressId).toEqual('searchId')
+    expect(result[0].selectedDeliveryChannel).toEqual(DELIVERY)
+    expect(result[0].addressId).toEqual('residentialId')
   })
 
   it('switch with one logistics info with both Delivery Channels and has slas', () => {
@@ -122,6 +123,43 @@ describe('changeActiveSlas', () => {
     expect(result[0].selectedDeliveryChannel).toEqual(PICKUP_IN_STORE)
     expect(result[0].selectedSla).toEqual('pickupSla')
     expect(result[0].addressId).toEqual('searchId')
+  })
+
+  it('switch with one logistics info with both Delivery Channels and has slas but one does not have pickup', () => {
+    const logisticsInfo = MULTIPLE_DELIVERY_PICKUP_LOGISTICS_INFO
+    const action = {
+      address: {
+        addressId: { value: 'residentialId' },
+        addressType: { value: 'residential' },
+        postalCode: { value: 'testPostalCode' },
+      },
+      searchAddress: {
+        addressId: { value: 'searchId' },
+        addressType: { value: 'search' },
+        postalCode: { value: 'testPostalCode' },
+      },
+    }
+    const items = [{ seller: '1' }]
+    const sellers = [{ id: '1' }]
+    const canEditData = true
+    const slaOption = null
+
+    const result = changeActiveSlas({
+      logisticsInfo,
+      action,
+      items,
+      sellers,
+      channel: PICKUP_IN_STORE,
+      canEditData,
+      slaOption,
+    })
+
+    expect(result[0].selectedDeliveryChannel).toEqual(PICKUP_IN_STORE)
+    expect(result[0].selectedSla).toEqual('pickupSla')
+    expect(result[0].addressId).toEqual('searchId')
+    expect(result[1].selectedDeliveryChannel).toEqual(DELIVERY)
+    expect(result[1].selectedSla).toEqual('deliverySLA')
+    expect(result[1].addressId).toEqual('residentialId')
   })
 
   it('switch with one logistics info with both Delivery Channels and an active pickup point', () => {
@@ -271,8 +309,8 @@ describe('setSelectedSlaFromSlaOption', () => {
       slaOption,
     })
 
-    expect(result[0].selectedDeliveryChannel).toEqual(PICKUP_IN_STORE)
-    expect(result[0].addressId).toEqual('searchId')
+    expect(result[0].selectedDeliveryChannel).toEqual(DELIVERY)
+    expect(result[0].addressId).toEqual('residentialId')
   })
 
   it('switch with one logistics info with both Delivery Channels and has slas', () => {

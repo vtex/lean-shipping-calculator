@@ -48,9 +48,10 @@ export function getNewLogisticsInfoIfPickup({
   if (
     hasCurrentDeliveryChannel(logisticsInfo, channel) &&
     isPickup(channel) &&
-    defaultSlaSelection &&
-    firstPickupSla &&
-    defaultSlaSelection.id !== firstPickupSla.id
+    ((defaultSlaSelection &&
+      firstPickupSla &&
+      defaultSlaSelection.id !== firstPickupSla.id) ||
+      !defaultSlaSelection)
   ) {
     const defaultDeliverySla = findSlaWithChannel(logisticsInfo, DELIVERY)
 

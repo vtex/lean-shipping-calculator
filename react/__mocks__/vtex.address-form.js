@@ -1,7 +1,12 @@
-import { removeValidation } from '@vtex/address-form'
-
 const helpers = {
-  removeValidation,
+  removeValidation: address =>
+    Object.keys(address).reduce(
+      (acc, key) => ({
+        ...acc,
+        [key]: address[key].value,
+      }),
+      {}
+    ),
 }
 
 module.exports = { helpers }
