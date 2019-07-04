@@ -19,7 +19,7 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "@vtex/address-form": "3.0.2",
+    "@vtex/address-form": "^3.5.12",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.2.2",
@@ -35,6 +35,8 @@
     "eslint-plugin-jest": "^21.12.2",
     "husky": "^1.2.0",
     "jest": "^22.3.0",
+    "react": "^16.8.6",
+    "react-intl": "^2.9.0",
     "regexpp": "^2.0.1",
     "rollup": "^0.57.1",
     "rollup-plugin-babel": "^3.0.3",

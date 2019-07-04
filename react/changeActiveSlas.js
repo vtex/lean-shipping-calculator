@@ -5,6 +5,8 @@ import {
   isFromCurrentSeller,
   hasSLAs,
   isPickup,
+  hasPostalCodeGeocoordinates,
+  hasCurrentDeliveryChannel,
 } from './utils'
 import { getNewLogisticsInfo } from './logisticsInfo'
 import { helpers } from 'vtex.address-form'
@@ -104,18 +106,29 @@ export function changeActiveSlas({
     })
   })
 
-  const actionAddress = removeValidation(action.address)
-  const actionSearchAddress = removeValidation(action.searchAddress)
   const hasSlas = logisticsInfo && !!logisticsInfo.find(li => hasSLAs(li))
 
   if (newLogisticsInfo && !hasSlas) {
-    newLogisticsInfo = newLogisticsInfo.map(li => ({
-      ...li,
-      selectedDeliveryChannel: channel,
-      addressId: isPickup(channel)
-        ? actionSearchAddress.addressId
-        : actionAddress.addressId,
-    }))
+    newLogisticsInfo = newLogisticsInfo.map(li => {
+      const hasAddress = hasPostalCodeGeocoordinates(
+        action.address,
+        action.searchAddress
+      )
+
+      if (!hasAddress) {
+        return {
+          ...li,
+          selectedDeliveryChannel: null,
+        }
+      }
+
+      return {
+        ...li,
+        selectedDeliveryChannel: hasCurrentDeliveryChannel(li, channel)
+          ? channel
+          : li.deliveryChannels[0] && li.deliveryChannels[0].id,
+      }
+    })
   }
 
   return newLogisticsInfo

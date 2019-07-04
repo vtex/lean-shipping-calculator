@@ -6,7 +6,7 @@ import {
   findChannelById,
 } from '@vtex/delivery-packages/dist/delivery-channel'
 import { helpers } from 'vtex.address-form'
-import { isFromCurrentSeller } from './utils'
+import { isFromCurrentSeller, hasCurrentDeliveryChannel } from './utils'
 const { removeValidation } = helpers
 
 export function getNewLogisticsInfoIfPickup({
@@ -17,8 +17,6 @@ export function getNewLogisticsInfoIfPickup({
   firstPickupSla,
   logisticsInfo,
 }) {
-  const noSlas = logisticsInfo.slas.length === 0
-
   if (
     firstPickupSla &&
     findChannelById(logisticsInfo, channel) &&
@@ -42,23 +40,13 @@ export function getNewLogisticsInfoIfPickup({
     }
   }
 
-  if (noSlas) {
-    return {
-      ...logisticsInfo,
-      selectedDeliveryChannel: channel,
-      addressId: isPickup(channel)
-        ? actionSearchAddress.addressId
-        : actionAddress.addressId,
-    }
-  }
-
   const defaultSlaSelection =
     logisticsInfo.slas.find(
       sla => firstPickupSla && sla.id === firstPickupSla.id
     ) || findSlaWithChannel(logisticsInfo, channel)
 
   if (
-    findChannelById(logisticsInfo, channel) &&
+    hasCurrentDeliveryChannel(logisticsInfo, channel) &&
     isPickup(channel) &&
     defaultSlaSelection &&
     firstPickupSla &&
@@ -68,8 +56,10 @@ export function getNewLogisticsInfoIfPickup({
 
     return {
       ...logisticsInfo,
-      addressId: actionAddress.addressId,
-      selectedDeliveryChannel: defaultDeliverySla ? DELIVERY : null,
+      addressId: defaultDeliverySla
+        ? actionAddress.addressId
+        : actionSearchAddress.addressId,
+      selectedDeliveryChannel: defaultDeliverySla ? DELIVERY : channel,
       selectedSla: defaultDeliverySla ? defaultDeliverySla.id : null,
     }
   }
@@ -79,7 +69,10 @@ export function getNewLogisticsInfoIfPickup({
     actionSearchAddress.geoCoordinates
   )
 
-  if (findChannelById(logisticsInfo, channel) && defaultSlaSelection) {
+  if (
+    hasCurrentDeliveryChannel(logisticsInfo, channel) &&
+    defaultSlaSelection
+  ) {
     const shouldReferenceSearchAddress =
       isPickup(channel) &&
       firstPickupSla &&
@@ -96,6 +89,15 @@ export function getNewLogisticsInfoIfPickup({
           ? firstPickupSla.id
           : defaultSlaSelection.id,
     }
+  }
+
+  return {
+    ...logisticsInfo,
+    selectedDeliveryChannel: hasCurrentDeliveryChannel(logisticsInfo, channel)
+      ? channel
+      : DELIVERY,
+    addressId: actionSearchAddress.addressId,
+    selectedSla: null,
   }
 }
 
@@ -116,7 +118,7 @@ export function getNewLogisticsInfoIfDelivery({
     }
   }
 
-  if (findChannelById(logisticsInfo, channel) && slaFromSlaOption) {
+  if (hasCurrentDeliveryChannel(logisticsInfo, channel) && slaFromSlaOption) {
     return {
       ...logisticsInfo,
       addressId: actionAddress.addressId,
@@ -125,7 +127,10 @@ export function getNewLogisticsInfoIfDelivery({
     }
   }
 
-  if (findChannelById(logisticsInfo, channel) && defaultSlaSelection) {
+  if (
+    hasCurrentDeliveryChannel(logisticsInfo, channel) &&
+    defaultSlaSelection
+  ) {
     return {
       ...logisticsInfo,
       addressId: actionAddress.addressId,

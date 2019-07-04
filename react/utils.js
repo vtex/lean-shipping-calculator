@@ -113,3 +113,40 @@ export function setSelectedDeliveryChannel(logisticsInfo, deliveryChannel) {
     }
   )
 }
+
+export function hasCurrentDeliveryChannel(li, currentChannel) {
+  return (
+    li &&
+    li.deliveryChannels &&
+    li.deliveryChannels.some(channel => channel.id === currentChannel)
+  )
+}
+
+export function checkIfHasGeoCoordinates(address) {
+  return (
+    address &&
+    get(address, 'geoCoordinates.value') &&
+    address.geoCoordinates.value.length > 0
+  )
+}
+
+export function checkIfHasPostalCode(searchAddress, address) {
+  return (
+    (searchAddress && !!get(searchAddress, 'postalCode.value')) ||
+    !!get(address, 'postalCode.value')
+  )
+}
+
+export function hasPostalCodeGeocoordinates(address, searchAddress) {
+  const addressesHasPostalCode = checkIfHasPostalCode(address, searchAddress)
+  const addressHasGeocoordinates = checkIfHasGeoCoordinates(address)
+  const searchAddressHasPostalCode = checkIfHasPostalCode(searchAddress)
+  const searchAddressHasGeocoordinates = checkIfHasGeoCoordinates(searchAddress)
+
+  return (
+    addressesHasPostalCode ||
+    addressHasGeocoordinates ||
+    searchAddressHasGeocoordinates ||
+    searchAddressHasPostalCode
+  )
+}
