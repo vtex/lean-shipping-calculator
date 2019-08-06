@@ -3,7 +3,7 @@
   "dependencies": {
     "@vtex/delivery-packages": "^2.17.0",
     "@vtex/estimate-calculator": "1.0.7",
-    "lodash": "^4.17.13"
+    "lodash": "^4.17.15"
   },
   "devDependencies": {
     "@vtex/address-form": "^3.5.12"
