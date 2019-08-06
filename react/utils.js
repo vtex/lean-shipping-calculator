@@ -152,12 +152,12 @@ export function hasPostalCodeGeocoordinates(address, searchAddress) {
 
 export function findSlaWithChannel(item, channel) {
   return (
+    item &&
     item.slas &&
-    item.slas.find(
-      sla =>
-        hasOnlyScheduledDelivery(item.slas, channel)
-          ? isCurrentChannel(sla, channel)
-          : isCurrentChannel(sla, channel) && !hasDeliveryWindows(sla)
+    item.slas.find(sla =>
+      hasOnlyScheduledDelivery(item.slas, channel)
+        ? isCurrentChannel(sla, channel)
+        : isCurrentChannel(sla, channel) && !hasDeliveryWindows(sla)
     )
   )
 }

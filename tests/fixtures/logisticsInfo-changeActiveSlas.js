@@ -35,6 +35,7 @@ const ONLY_DELIVERY_LOGISTICS_INFO = [
       {
         id: 'deliverySLA',
         deliveryChannel: DELIVERY,
+        availableDeliveryWindows: [],
       },
     ],
     selectedSla: 'deliverySLA',
@@ -58,10 +59,12 @@ const DELIVERY_PICKUP_LOGISTICS_INFO = [
       {
         id: 'deliverySLA',
         deliveryChannel: DELIVERY,
+        availableDeliveryWindows: [],
       },
       {
         id: 'pickupSla',
         deliveryChannel: PICKUP_IN_STORE,
+        availableDeliveryWindows: [],
       },
     ],
     selectedSla: 'deliverySLA',
@@ -85,10 +88,12 @@ const MULTIPLE_DELIVERY_PICKUP_LOGISTICS_INFO = [
       {
         id: 'deliverySLA',
         deliveryChannel: DELIVERY,
+        availableDeliveryWindows: [],
       },
       {
         id: 'pickupSla',
         deliveryChannel: PICKUP_IN_STORE,
+        availableDeliveryWindows: [],
       },
     ],
     selectedSla: 'deliverySLA',
@@ -109,6 +114,7 @@ const MULTIPLE_DELIVERY_PICKUP_LOGISTICS_INFO = [
       {
         id: 'deliverySLA',
         deliveryChannel: DELIVERY,
+        availableDeliveryWindows: [],
       },
     ],
     selectedSla: 'deliverySLA',
@@ -132,14 +138,17 @@ const PICKUP_SELECTED_LOGISTICS_INFO = [
       {
         id: 'deliverySLA',
         deliveryChannel: DELIVERY,
+        availableDeliveryWindows: [],
       },
       {
         id: 'pickupSla',
         deliveryChannel: PICKUP_IN_STORE,
+        availableDeliveryWindows: [],
       },
       {
         id: 'pickupSlaSelected',
         deliveryChannel: PICKUP_IN_STORE,
+        availableDeliveryWindows: [],
       },
     ],
     selectedSla: 'deliverySLA',
@@ -163,10 +172,12 @@ const MULTIPLE_SELLERS_LOGISTICS_INFO = [
       {
         id: 'deliverySLA',
         deliveryChannel: DELIVERY,
+        availableDeliveryWindows: [],
       },
       {
         id: 'pickupSeller1',
         deliveryChannel: PICKUP_IN_STORE,
+        availableDeliveryWindows: [],
       },
     ],
     selectedSla: 'deliverySLA',
@@ -187,10 +198,12 @@ const MULTIPLE_SELLERS_LOGISTICS_INFO = [
       {
         id: 'deliverySLA',
         deliveryChannel: DELIVERY,
+        availableDeliveryWindows: [],
       },
       {
         id: 'pickupSeller2',
         deliveryChannel: PICKUP_IN_STORE,
+        availableDeliveryWindows: [],
       },
     ],
     selectedSla: 'deliverySLA',
