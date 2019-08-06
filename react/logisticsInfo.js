@@ -1,12 +1,11 @@
 import isEqual from 'lodash/isEqual'
 import { DELIVERY } from './constants'
-import { findSlaWithChannel } from '@vtex/delivery-packages/dist/sla'
 import {
   isPickup,
   findChannelById,
 } from '@vtex/delivery-packages/dist/delivery-channel'
 import { helpers } from 'vtex.address-form'
-import { isFromCurrentSeller, hasCurrentDeliveryChannel } from './utils'
+import { isFromCurrentSeller, hasCurrentDeliveryChannel, findSlaWithChannel } from './utils'
 const { removeValidation } = helpers
 
 export function getNewLogisticsInfoIfPickup({
