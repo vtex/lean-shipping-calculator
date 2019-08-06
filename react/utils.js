@@ -1,7 +1,6 @@
 import isString from 'lodash/isString'
 import get from 'lodash/get'
 import { PICKUP_IN_STORE, DELIVERY } from './constants'
-import { findSlaWithChannel } from '@vtex/delivery-packages/dist/sla'
 
 function getDeliveryChannel(deliveryChannelSource) {
   if (isString(deliveryChannelSource)) {
@@ -148,5 +147,17 @@ export function hasPostalCodeGeocoordinates(address, searchAddress) {
     addressHasGeocoordinates ||
     searchAddressHasGeocoordinates ||
     searchAddressHasPostalCode
+  )
+}
+
+export function findSlaWithChannel(item, channel) {
+  return (
+    item.slas &&
+    item.slas.find(
+      sla =>
+        hasOnlyScheduledDelivery(item.slas, channel)
+          ? isCurrentChannel(sla, channel)
+          : isCurrentChannel(sla, channel) && !hasDeliveryWindows(sla)
+    )
   )
 }
