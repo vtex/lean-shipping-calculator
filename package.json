@@ -1,6 +1,6 @@
 {
   "name": "@vtex/lean-shipping-calculator",
-  "version": "0.2.1",
+  "version": "0.2.5-beta",
   "description": "",
   "main": "lib/index.js",
   "module": "lib/index.esm.js",
