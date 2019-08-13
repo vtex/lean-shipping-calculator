@@ -126,7 +126,7 @@ describe('changeActiveSlas', () => {
     expect(result[0].addressId).toEqual('searchId')
   })
 
-  it('switch with multiple logistics info with both Delivery Channels and has slas but one does not have pickup', () => {
+  it('switches with multiple logistics info with both Delivery Channels and has slas but one does not have pickup', () => {
     const logisticsInfo = MULTIPLE_DELIVERY_PICKUP_LOGISTICS_INFO
     const action = {
       address: {
@@ -197,7 +197,7 @@ describe('changeActiveSlas', () => {
     expect(result[0].addressId).toEqual('searchId')
   })
 
-  it('switch with one logistics info with both Delivery Channels and no pickup points', () => {
+  it('switches with one logistics info with both Delivery Channels and no pickup points', () => {
     const logisticsInfo = NO_PICKUP_SELECTED_LOGISTICS_INFO
     const action = {
       address: {
