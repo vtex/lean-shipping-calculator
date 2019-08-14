@@ -27,9 +27,6 @@ const ONLY_DELIVERY_LOGISTICS_INFO = [
       {
         id: DELIVERY,
       },
-      {
-        id: PICKUP_IN_STORE,
-      },
     ],
     slas: [
       {
@@ -100,7 +97,7 @@ const MULTIPLE_DELIVERY_PICKUP_LOGISTICS_INFO = [
   },
   {
     addressId: 'residentialId',
-    itemIndex: 0,
+    itemIndex: 1,
     selectedDeliveryChannel: DELIVERY,
     deliveryChannels: [
       {
@@ -148,6 +145,30 @@ const PICKUP_SELECTED_LOGISTICS_INFO = [
       {
         id: 'pickupSlaSelected',
         deliveryChannel: PICKUP_IN_STORE,
+        availableDeliveryWindows: [],
+      },
+    ],
+    selectedSla: 'deliverySLA',
+  },
+]
+
+const NO_PICKUP_SELECTED_LOGISTICS_INFO = [
+  {
+    addressId: 'residentialId',
+    itemIndex: 0,
+    selectedDeliveryChannel: DELIVERY,
+    deliveryChannels: [
+      {
+        id: DELIVERY,
+      },
+      {
+        id: PICKUP_IN_STORE,
+      },
+    ],
+    slas: [
+      {
+        id: 'deliverySLA',
+        deliveryChannel: DELIVERY,
         availableDeliveryWindows: [],
       },
     ],
@@ -217,4 +238,5 @@ module.exports = {
   PICKUP_SELECTED_LOGISTICS_INFO,
   MULTIPLE_SELLERS_LOGISTICS_INFO,
   MULTIPLE_DELIVERY_PICKUP_LOGISTICS_INFO,
+  NO_PICKUP_SELECTED_LOGISTICS_INFO,
 }

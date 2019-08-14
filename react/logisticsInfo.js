@@ -5,7 +5,11 @@ import {
   findChannelById,
 } from '@vtex/delivery-packages/dist/delivery-channel'
 import { helpers } from 'vtex.address-form'
-import { isFromCurrentSeller, hasCurrentDeliveryChannel, findSlaWithChannel } from './utils'
+import {
+  isFromCurrentSeller,
+  hasCurrentDeliveryChannel,
+  findSlaWithChannel,
+} from './utils'
 const { removeValidation } = helpers
 
 export function getNewLogisticsInfoIfPickup({
@@ -15,6 +19,7 @@ export function getNewLogisticsInfoIfPickup({
   canEditData,
   firstPickupSla,
   logisticsInfo,
+  hasMultipleItems,
 }) {
   if (
     firstPickupSla &&
@@ -53,14 +58,16 @@ export function getNewLogisticsInfoIfPickup({
       !defaultSlaSelection)
   ) {
     const defaultDeliverySla = findSlaWithChannel(logisticsInfo, DELIVERY)
-
     return {
       ...logisticsInfo,
-      addressId: defaultDeliverySla
-        ? actionAddress.addressId
-        : actionSearchAddress.addressId,
-      selectedDeliveryChannel: defaultDeliverySla ? DELIVERY : channel,
-      selectedSla: defaultDeliverySla ? defaultDeliverySla.id : null,
+      addressId:
+        defaultDeliverySla && hasMultipleItems
+          ? actionAddress.addressId
+          : actionSearchAddress.addressId,
+      selectedDeliveryChannel:
+        defaultDeliverySla && hasMultipleItems ? DELIVERY : channel,
+      selectedSla:
+        defaultDeliverySla && hasMultipleItems ? defaultDeliverySla.id : null,
     }
   }
 
@@ -77,7 +84,6 @@ export function getNewLogisticsInfoIfPickup({
       isPickup(channel) &&
       firstPickupSla &&
       (canEditData || hasDifferentGeoCoordinates)
-
     return {
       ...logisticsInfo,
       selectedDeliveryChannel: channel,
@@ -96,7 +102,9 @@ export function getNewLogisticsInfoIfPickup({
     selectedDeliveryChannel: hasCurrentDeliveryChannel(logisticsInfo, channel)
       ? channel
       : DELIVERY,
-    addressId: actionSearchAddress.addressId,
+    addressId: hasCurrentDeliveryChannel(logisticsInfo, channel)
+      ? actionSearchAddress.addressId
+      : actionAddress.addressId,
     selectedSla: null,
   }
 }
@@ -169,6 +177,7 @@ export function getNewLogisticsInfo({
         canEditData,
         firstPickupSla: slaFromSlaOption || firstPickupSla,
         logisticsInfo: li,
+        hasMultipleItems: newLogisticsInfo.length > 1,
       })
 
       if (newLogisticsInfoIfPickup) {
