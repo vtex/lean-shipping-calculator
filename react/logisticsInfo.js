@@ -129,7 +129,7 @@ export function getNewLogisticsInfoIfDelivery({
   if (
     hasCurrentDeliveryChannel(logisticsInfo, channel) &&
     slaFromSlaOption &&
-    logisticsInfo.slas.find(sla => sla.id === slaFromSlaOption.id)
+    logisticsInfo.slas.some(sla => sla.id === slaFromSlaOption.id)
   ) {
     return {
       ...logisticsInfo,
