@@ -7,5 +7,6 @@
   },
   "devDependencies": {
     "@vtex/address-form": "^3.5.12"
-  }
+  },
+  "version": "0.2.6"
 }
