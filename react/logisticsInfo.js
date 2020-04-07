@@ -29,8 +29,12 @@ export function getNewLogisticsInfoIfPickup({
     return logisticsInfo
   }
 
-  if (
+  const hasFirstPickupSla =
     firstPickupSla &&
+    logisticsInfo.slas.some(sla => sla.id === firstPickupSla.id)
+
+  if (
+    hasFirstPickupSla &&
     findChannelById(logisticsInfo, firstPickupSla.deliveryChannel) &&
     firstPickupSla.deliveryChannel === DELIVERY
   ) {
@@ -40,7 +44,7 @@ export function getNewLogisticsInfoIfPickup({
       selectedDeliveryChannel: firstPickupSla
         ? firstPickupSla.deliveryChannel
         : null,
-      selectedSla: firstPickupSla ? firstPickupSla.id : null,
+      selectedSla: firstPickupSla.id,
     }
   }
 
@@ -91,7 +95,7 @@ export function getNewLogisticsInfoIfPickup({
         ? actionSearchAddress.addressId
         : actionAddress.addressId,
       selectedSla:
-        isPickup(channel) && firstPickupSla
+        isPickup(channel) && hasFirstPickupSla
           ? firstPickupSla.id
           : defaultSlaSelection.id,
     }
@@ -105,7 +109,6 @@ export function getNewLogisticsInfoIfPickup({
     addressId: hasCurrentDeliveryChannel(logisticsInfo, channel)
       ? actionSearchAddress.addressId
       : actionAddress.addressId,
-    selectedSla: null,
   }
 }
 
