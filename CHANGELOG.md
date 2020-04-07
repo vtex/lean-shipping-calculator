@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- `setSelectedSlaFromSlaOption` only sets the SLA of items that have that SLA.
+
 ## [0.2.5] - 2019-08-14
 
 ### Changed
