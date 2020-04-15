@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Excludes all-scheduled logistic info from lean shipping calculation.
+
 ## [0.2.7] - 2020-04-08
 
 ### Fixed

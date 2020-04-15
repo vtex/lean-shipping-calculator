@@ -136,57 +136,17 @@ function setSelectedSla({
   logisticsInfo,
   selectedSlas,
   activeChannel,
-  isScheduledDeliveryActive,
 }) {
   const newLogisticsInfo = []
 
-  const hasItemWithMandatoryScheduledDelivery = logisticsInfo.some(li =>
-    li.slas.every(sla => hasDeliveryWindows(sla))
-  )
-
   logisticsInfo.forEach((logisticsItem, index) => {
+    const hasMandatoryScheduledDelivery = logisticsItem.slas.length && logisticsItem.slas.every(sla => hasDeliveryWindows(sla))
+
     if (
       isUnavailable(logisticsItem) ||
-      (isPickup(logisticsItem) && isPickup(activeChannel))
+      (isPickup(logisticsItem) && isPickup(activeChannel)) || hasMandatoryScheduledDelivery
     ) {
       newLogisticsInfo.push(logisticsItem)
-
-      return
-    }
-
-    const hasMandatoryScheduledDelivery =
-      logisticsItem.slas.length === 1 &&
-      logisticsItem.slas.every(
-        sla => isCurrentChannel(sla, activeChannel) && hasDeliveryWindows(sla)
-      )
-
-    const scheduledDelivery = logisticsItem.slas.find(
-      sla => isCurrentChannel(sla, activeChannel) && hasDeliveryWindows(sla)
-    )
-
-    if (
-      ((isScheduledDeliveryActive || hasMandatoryScheduledDelivery) &&
-        scheduledDelivery) ||
-      (hasItemWithMandatoryScheduledDelivery && scheduledDelivery)
-    ) {
-      const selectedSla = logisticsItem.slas.find(
-        sla => sla.id === logisticsItem.selectedSla
-      )
-
-      const shouldUseSelectedSla =
-        !hasMandatoryScheduledDelivery &&
-        selectedSla &&
-        hasDeliveryWindows(selectedSla)
-
-      newLogisticsInfo.push({
-        ...logisticsItem,
-        selectedSla: shouldUseSelectedSla
-          ? selectedSla.id
-          : scheduledDelivery.id,
-        selectedDeliveryChannel: shouldUseSelectedSla
-          ? selectedSla.deliveryChannel
-          : scheduledDelivery.deliveryChannel,
-      })
 
       return
     }
@@ -362,14 +322,12 @@ export function getLeanShippingOptions({
     logisticsInfo,
     selectedSlas: selectedSlas.cheapest,
     activeChannel,
-    isScheduledDeliveryActive,
   })
 
   const fastest = setSelectedSla({
     logisticsInfo,
     selectedSlas: selectedSlas.fastest,
     activeChannel,
-    isScheduledDeliveryActive,
   })
 
   const fastestAndCheapestAreEqual = isEqual(cheapest, fastest)
@@ -381,7 +339,6 @@ export function getLeanShippingOptions({
       logisticsInfo,
       selectedSlas: selectedSlas.fastest,
       activeChannel,
-      isScheduledDeliveryActive,
     })
   }
 
