@@ -150,7 +150,7 @@ export function getNewLogisticsInfoIfDelivery({
       ...logisticsInfo,
       addressId: actionAddress.addressId,
       selectedDeliveryChannel: channel,
-      selectedSla: defaultSlaSelection.id,
+      selectedSla: logisticsInfo.selectedSla || defaultSlaSelection.id,
     }
   }
 }
