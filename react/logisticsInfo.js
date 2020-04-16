@@ -142,15 +142,12 @@ export function getNewLogisticsInfoIfDelivery({
     }
   }
 
-  if (
-    hasCurrentDeliveryChannel(logisticsInfo, channel) &&
-    defaultSlaSelection
-  ) {
+  if (hasCurrentDeliveryChannel(logisticsInfo, channel)) {
     return {
       ...logisticsInfo,
       addressId: actionAddress.addressId,
       selectedDeliveryChannel: channel,
-      selectedSla: defaultSlaSelection.id,
+      selectedSla: logisticsInfo.selectedSla || defaultSlaSelection.id,
     }
   }
 }

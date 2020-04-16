@@ -79,14 +79,10 @@ export function getSelectedDeliveryOption({
     : activeDeliveryOption
 }
 
-function filterSlasByChannel(slas, isScheduledDeliveryActive) {
+function filterSlasByChannel(slas) {
   if (!slas) return
 
-  return slas.filter(sla =>
-    hasOnlyScheduledDelivery(slas) || isScheduledDeliveryActive
-      ? isDelivery(sla)
-      : isDelivery(sla) && !hasDeliveryWindows(sla)
-  )
+  return slas.filter(sla => isDelivery(sla) && !hasDeliveryWindows(sla))
 }
 
 function getSlaAccumulatedPrice(sla, logisticsInfo) {
@@ -108,12 +104,9 @@ function createArrayOfSlasObject(slas, logisticsInfo) {
   }))
 }
 
-function createArraysOfSlas(logisticsInfo, isScheduledDeliveryActive) {
+function createArraysOfSlas(logisticsInfo) {
   return logisticsInfo.map(item => {
-    const filteredByChannel = filterSlasByChannel(
-      item.slas,
-      isScheduledDeliveryActive
-    )
+    const filteredByChannel = filterSlasByChannel(item.slas)
 
     return filteredByChannel.length
       ? createArrayOfSlasObject(filteredByChannel, logisticsInfo)
@@ -349,10 +342,7 @@ export function getLeanShippingOptions({
   activeChannel = DELIVERY,
   isScheduledDeliveryActive = false,
 }) {
-  const arraysOfSlas = createArraysOfSlas(
-    logisticsInfo,
-    isScheduledDeliveryActive
-  )
+  const arraysOfSlas = createArraysOfSlas(logisticsInfo)
   const selectedSlas = {
     cheapest: getMinSlaBy(arraysOfSlas, 'price'),
     fastest: getMinSlaBy(arraysOfSlas, 'shippingEstimateInSeconds'),
