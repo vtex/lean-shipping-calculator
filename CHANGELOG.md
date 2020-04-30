@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.9] - 2020-04-30
+
 ### Fixed
 
 - `hasItemWithMandatoryScheduledDelivery` only evaluates to `true` if all the SLAs have `delivery` as their delivery channel.
