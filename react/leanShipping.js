@@ -134,7 +134,7 @@ function setSelectedSla({
   const newLogisticsInfo = []
 
   const hasItemWithMandatoryScheduledDelivery = logisticsInfo.some(li =>
-    li.slas.every(sla => hasDeliveryWindows(sla))
+    li.slas.every(sla => hasDeliveryWindows(sla) && isDelivery(sla))
   )
 
   logisticsInfo.forEach((logisticsItem, index) => {
