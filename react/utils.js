@@ -167,11 +167,13 @@ export function findSlaWithChannel(item, channel) {
     )
   })
 
-  let cheapestSla = !!currentChannelSlas.length && currentChannelSlas[0]
+  let cheapestSla = currentChannelSlas[0]
 
-  currentChannelSlas.forEach(sla => {
-    cheapestSla = sla.price < cheapestSla.price ? sla : cheapestSla
-  })
+  if (cheapestSla) {
+    currentChannelSlas.forEach(sla => {
+      cheapestSla = sla.price < cheapestSla.price ? sla : cheapestSla
+    })
+  }
 
   return cheapestSla
 }
