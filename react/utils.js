@@ -151,13 +151,29 @@ export function hasPostalCodeGeocoordinates(address, searchAddress) {
 }
 
 export function findSlaWithChannel(item, channel) {
-  return (
-    item &&
-    item.slas &&
-    item.slas.find(sla =>
-      hasOnlyScheduledDelivery(item.slas, channel)
-        ? isCurrentChannel(sla, channel)
-        : isCurrentChannel(sla, channel) && !hasDeliveryWindows(sla)
-    )
+  if (!item || !item.slas) {
+    return null
+  }
+
+  const hasOnlyScheduledDeliverySla = hasOnlyScheduledDelivery(
+    item.slas,
+    channel
   )
+
+  const currentChannelSlas = item.slas.filter(sla => {
+    return (
+      isCurrentChannel(sla, channel) &&
+      (!hasDeliveryWindows(sla) || hasOnlyScheduledDeliverySla)
+    )
+  })
+
+  let cheapestSla = currentChannelSlas[0]
+
+  if (cheapestSla) {
+    currentChannelSlas.forEach(sla => {
+      cheapestSla = sla.price < cheapestSla.price ? sla : cheapestSla
+    })
+  }
+
+  return cheapestSla
 }

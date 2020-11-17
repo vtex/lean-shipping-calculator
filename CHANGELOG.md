@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- `findSlaWithChannel` now returns the cheapest SLA.
+
 ## [0.2.10] - 2020-05-13
 
 ### Fixed
