@@ -3,6 +3,7 @@ import sumBy from 'lodash/sumBy'
 import minBy from 'lodash/minBy'
 import orderBy from 'lodash/orderBy'
 import isEqual from 'lodash/isEqual'
+import intersection from 'lodash/intersection'
 import omit from 'lodash/omit'
 import { getStructuredOption } from './DeliveryPackagesUtils'
 import { CHEAPEST, COMBINED, FASTEST, DELIVERY } from './constants'
@@ -295,27 +296,16 @@ export function getCombinedOption(
   )
 }
 
-// Get SLA's able to deliver all cart
-function getConsistentSlas(items) {
-  let consistentSlas = []
-
-  for (let slas of items) {
-    if (consistentSlas.length === 0) consistentSlas = slas.map(sla => sla.id)
-    consistentSlas = consistentSlas.filter(slaId => slas.some(sla => sla.id === slaId))
-  }
-
-  return consistentSlas
-}
+const getSlasAvailableToEveryItem = (slasByItem) =>
+  intersection(...slasByItem.map(slas => slas.map(sla => sla.id)))
 
 function getMinSlaBy(items, property) {
-  const consistentSlas = getConsistentSlas(items)
+  const slasAvailableToEveryItem = getSlasAvailableToEveryItem(items)
 
-  for (let i = 0; i < items.length; i += 1) {
-    // Ordering by consistent SLA's makes it our tiebreaker
-    items[i] = orderBy(items[i], sla => consistentSlas.some(slaId => sla.id !== slaId))
-  }
-
-  return items.map(slas => minBy(slas, slasGroup => slasGroup[property]))
+  return items
+  // Ordering by consistent SLA's makes it our tiebreaker
+    .map(item => orderBy(item, sla => slasAvailableToEveryItem.some(slaId => sla.id !== slaId)))
+    .map(slas => minBy(slas, slasGroup => slasGroup[property]))
 }
 
 function shouldShowCheapest(cheapest, fastest) {
