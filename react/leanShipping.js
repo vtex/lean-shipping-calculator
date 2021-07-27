@@ -1,6 +1,7 @@
 import estimateCalculator from '@vtex/estimate-calculator'
 import sumBy from 'lodash/sumBy'
 import minBy from 'lodash/minBy'
+import orderBy from 'lodash/orderBy'
 import isEqual from 'lodash/isEqual'
 import omit from 'lodash/omit'
 import { getStructuredOption } from './DeliveryPackagesUtils'
@@ -294,35 +295,52 @@ export function getCombinedOption(
   )
 }
 
+// Get SLA's able to deliver all cart
+function getConsistentSlas(items) {
+  let consistentSlas = []
+
+  for (let slas of items) {
+    if (consistentSlas.length === 0) consistentSlas = slas.map(sla => sla.id)
+    consistentSlas = consistentSlas.filter(slaId => slas.some(sla => sla.id === slaId))
+  }
+
+  return consistentSlas
+}
+
 function getMinSlaBy(items, property) {
+  const consistentSlas = getConsistentSlas(items)
+
+  for (let i = 0; i < items.length; i += 1) {
+    // Ordering by consistent SLA's makes it our tiebreaker
+    items[i] = orderBy(items[i], sla => consistentSlas.some(slaId => sla.id !== slaId))
+  }
+
   return items.map(slas => minBy(slas, slasGroup => slasGroup[property]))
 }
 
 function shouldShowCheapest(cheapest, fastest) {
   const cheapestDetails = getStructuredOption(cheapest, CHEAPEST)
-
   const fastestDetails = getStructuredOption(fastest, FASTEST)
 
-  const isCheapestCheaperThanFastest =
-    cheapestDetails.price < fastestDetails.price
-
+  const hasCheapestLessPackages = cheapestDetails.packagesLength < fastestDetails.packagesLength
+  const isCheapestCheaperThanFastest = cheapestDetails.price < fastestDetails.price
   const fastestAndCheapestAreEqual = isEqual(cheapest, fastest)
-
   const isCheapestEmpty = cheapestDetails.packagesLength === 0
 
   return (
     cheapest &&
-    (isCheapestCheaperThanFastest ||
+    (
+      hasCheapestLessPackages ||
+      isCheapestCheaperThanFastest ||
       isCheapestEmpty ||
-      fastestAndCheapestAreEqual)
+      fastestAndCheapestAreEqual
+    )
   )
 }
 
 function shouldShowCombined(cheapest, fastest, combined) {
   const cheapestDetails = getStructuredOption(cheapest)
-
   const fastestDetails = getStructuredOption(fastest)
-
   const combinedDetails = getStructuredOption(combined)
 
   return (
@@ -332,9 +350,13 @@ function shouldShowCombined(cheapest, fastest, combined) {
 }
 
 function shouldShowFastest(cheapest, fastest) {
+  const cheapestDetails = getStructuredOption(cheapest, CHEAPEST)
+  const fastestDetails = getStructuredOption(fastest, FASTEST)
+
+  const hasCheapestLessPackages = cheapestDetails.packagesLength < fastestDetails.packagesLength
   const fastestAndCheapestAreEqual = isEqual(cheapest, fastest)
 
-  return fastest && !fastestAndCheapestAreEqual
+  return fastest && !fastestAndCheapestAreEqual && !hasCheapestLessPackages
 }
 
 export function getLeanShippingOptions({
