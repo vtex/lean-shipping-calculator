@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Use consistency of SLA's through items as a tiebreaker.
+
 ## [0.2.11] - 2020-11-17
 
 ### Changed
