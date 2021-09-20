@@ -4,8 +4,8 @@ import {
   getSelectedDeliveryOption,
 } from '../react/leanShipping'
 
-describe('Check if getOptionsDetails', () => {
-  it('For correct lean shipping options details', () => {
+describe('getOptionDetails', () => {
+  it('should get correct lean shipping options details', () => {
     const delivery = {
       [CHEAPEST]: [
         {
@@ -27,11 +27,12 @@ describe('Check if getOptionsDetails', () => {
 
     const expectedResult = [
       {
-        averageEstimatePerItem: 86400,
+        averageEstimatePerItem: 24 * 60 * 60,
         id: 'CHEAPEST',
         packagesLength: 1,
         price: 100,
         shippingEstimate: '1d',
+        shippingEstimateInSeconds: 24 * 60 * 60,
       },
     ]
 
@@ -39,8 +40,8 @@ describe('Check if getOptionsDetails', () => {
   })
 })
 
-describe('Check if getSelectedDeliveryOption', () => {
-  it('For correct selected delivery option', () => {
+describe('getSelectedDeliveryOption', () => {
+  it('should select correct delivery option', () => {
     const delivery = {
       CHEAPEST: [
         {
