@@ -1,15 +1,16 @@
 import estimateCalculator from '@vtex/estimate-calculator'
-import sumBy from 'lodash/sumBy'
-import minBy from 'lodash/minBy'
-import orderBy from 'lodash/orderBy'
-import isEqual from 'lodash/isEqual'
-import intersection from 'lodash/intersection'
-import omit from 'lodash/omit'
+import { intersection, isEqual, minBy, omit, sortBy, sumBy } from 'lodash'
 import { getStructuredOption } from './DeliveryPackagesUtils'
-import { CHEAPEST, COMBINED, FASTEST, DELIVERY } from './constants'
+import {
+  CHEAPEST,
+  COMBINED,
+  FASTEST,
+  DELIVERY,
+  PRICE,
+  SHIPPING_ESTIMATE_IN_SECONDS,
+} from './constants'
 import {
   hasDeliveryWindows,
-  hasOnlyScheduledDelivery,
   isPickup,
   isDelivery,
   isCurrentChannel,
@@ -106,7 +107,7 @@ function createArrayOfSlasObject(slas, logisticsInfo) {
   }))
 }
 
-function createArraysOfSlas(logisticsInfo) {
+function createArrayOfSlas(logisticsInfo) {
   return logisticsInfo.map(item => {
     const filteredByChannel = filterSlasByChannel(item.slas)
 
@@ -256,7 +257,7 @@ export function getCombinedOption(
   )
 
   const possibleCombinedCombinations = slasCombinations.map(
-    (combination, index) => {
+    (_combination, index) => {
       if (
         slasMoreExpensiveThanCheapest[index] &&
         slasFasterThanCheapest[index] &&
@@ -296,16 +297,21 @@ export function getCombinedOption(
   )
 }
 
-const getSlasAvailableToEveryItem = (slasByItem) =>
-  intersection(...slasByItem.map(slas => slas.map(sla => sla.id)))
+function getBestSlasBy(arrayOfSlas, property, shouldPrioritizeConsistentSlas) {
+  const slasAvailableToEveryItem = intersection(
+    ...arrayOfSlas.map(slas => slas.map(sla => sla.id))
+  )
 
-function getMinSlaBy(items, property) {
-  const slasAvailableToEveryItem = getSlasAvailableToEveryItem(items)
+  const sortingCriterias = []
 
-  return items
-  // Ordering by consistent SLA's makes it our tiebreaker
-    .map(item => orderBy(item, sla => slasAvailableToEveryItem.some(slaId => sla.id !== slaId)))
-    .map(slas => minBy(slas, slasGroup => slasGroup[property]))
+  // "Consistent SLAs" stands for SLAs that are available to every item
+  if (shouldPrioritizeConsistentSlas) {
+    sortingCriterias.push(sla => !slasAvailableToEveryItem.includes(sla.id))
+  }
+  sortingCriterias.push(sla => sla[property])
+  sortingCriterias.push(sla => sla.id)
+
+  return arrayOfSlas.map(slas => sortBy(slas, sortingCriterias)[0])
 }
 
 function shouldShowCheapest(cheapest, fastest) {
@@ -350,29 +356,115 @@ function shouldShowFastest(cheapest, fastest) {
   return fastest && !fastestAndCheapestAreEqual && !hasCheapestLessPackages
 }
 
+function areSelectedSlasValid(logisticsInfo) {
+  const selectedSlas = logisticsInfo
+    .filter(logisticInfo => logisticInfo.selectedSla !== null)
+    .map(logisticInfo => logisticInfo.selectedSla)
+
+  return logisticsInfo.every(
+    logisticInfo =>
+      intersection(
+        logisticInfo.slas.map(sla => sla.id),
+        selectedSlas
+      ).length === 1
+  )
+}
+
+function setSelectedSlaIfValid({
+  logisticsInfo,
+  selectedSlas,
+  activeChannel,
+  isScheduledDeliveryActive,
+}) {
+  const newLogisticsInfo = setSelectedSla({
+    logisticsInfo,
+    selectedSlas,
+    activeChannel,
+    isScheduledDeliveryActive,
+  })
+  return areSelectedSlasValid(newLogisticsInfo) ? newLogisticsInfo : null
+}
+
+function getBestOption({
+  logisticsInfo,
+  activeChannel = DELIVERY,
+  isScheduledDeliveryActive = false,
+  property,
+}) {
+  const arrayOfSlas = createArrayOfSlas(logisticsInfo)
+
+  const currentSelectedSlas = arrayOfSlas.map((slas, index) =>
+    slas.find(sla => sla.id === logisticsInfo[index].selectedSla)
+  )
+  const bestIndividualSlas = getBestSlasBy(arrayOfSlas, property, false)
+  const bestConsistentSlas = getBestSlasBy(arrayOfSlas, property, true)
+
+  const currentLogisticsInfo = setSelectedSlaIfValid({
+    logisticsInfo,
+    selectedSlas: currentSelectedSlas,
+    activeChannel,
+    isScheduledDeliveryActive,
+  })
+
+  const bestIndividualLogisticsInfo = setSelectedSlaIfValid({
+    logisticsInfo,
+    selectedSlas: bestIndividualSlas,
+    activeChannel,
+    isScheduledDeliveryActive,
+  })
+
+  const bestConsistentLogisticsInfo = setSelectedSlaIfValid({
+    logisticsInfo,
+    selectedSlas: bestConsistentSlas,
+    activeChannel,
+    isScheduledDeliveryActive,
+  })
+
+  const validLogisticsInfoArray = [
+    currentLogisticsInfo,
+    bestIndividualLogisticsInfo,
+    bestConsistentLogisticsInfo,
+  ].filter(logisticsInfo => logisticsInfo)
+
+  const slasAvailableToEveryItem = intersection(
+    ...arrayOfSlas.map(slas => slas.map(sla => sla.id))
+  )
+
+  // if all options are invalid, returns what used to be returned in the
+  // previous "buggy" version
+  const fallback = setSelectedSla({
+    logisticsInfo,
+    selectedSlas: bestIndividualSlas,
+    activeChannel,
+    isScheduledDeliveryActive,
+  })
+
+  const bestLogisticsInfo =
+    sortBy(validLogisticsInfoArray, [
+      li => getStructuredOption(li)[property],
+      li => li.every(x => !slasAvailableToEveryItem.includes(x.selectedSla)),
+    ])[0] || fallback
+
+  return bestLogisticsInfo
+}
+
 export function getLeanShippingOptions({
   logisticsInfo,
   activeChannel = DELIVERY,
   isScheduledDeliveryActive = false,
 }) {
-  const arraysOfSlas = createArraysOfSlas(logisticsInfo)
-  const selectedSlas = {
-    cheapest: getMinSlaBy(arraysOfSlas, 'price'),
-    fastest: getMinSlaBy(arraysOfSlas, 'shippingEstimateInSeconds'),
-  }
-
-  const cheapest = setSelectedSla({
+  const cheapest = getBestOption({
     logisticsInfo,
-    selectedSlas: selectedSlas.cheapest,
     activeChannel,
     isScheduledDeliveryActive,
+    property: PRICE,
   })
 
-  const fastest = setSelectedSla({
+  const fastest = getBestOption({
     logisticsInfo,
-    selectedSlas: selectedSlas.fastest,
     activeChannel,
     isScheduledDeliveryActive,
+    property: SHIPPING_ESTIMATE_IN_SECONDS,
   })
 
   const fastestAndCheapestAreEqual = isEqual(cheapest, fastest)
@@ -380,11 +472,11 @@ export function getLeanShippingOptions({
   let combined = []
 
   if (!fastestAndCheapestAreEqual) {
-    combined = setSelectedSla({
+    combined = getBestOption({
       logisticsInfo,
-      selectedSlas: selectedSlas.fastest,
       activeChannel,
       isScheduledDeliveryActive,
+      property: SHIPPING_ESTIMATE_IN_SECONDS,
     })
   }
 
