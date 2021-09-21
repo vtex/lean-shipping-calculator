@@ -312,19 +312,19 @@ function shouldShowCheapest(cheapest, fastest) {
   const cheapestDetails = getStructuredOption(cheapest, CHEAPEST)
   const fastestDetails = getStructuredOption(fastest, FASTEST)
 
-  const hasCheapestLessPackages = cheapestDetails.packagesLength < fastestDetails.packagesLength
-  const isCheapestCheaperThanFastest = cheapestDetails.price < fastestDetails.price
+  const hasCheapestLessPackages =
+    cheapestDetails.packagesLength < fastestDetails.packagesLength
+  const isCheapestCheaperThanFastest =
+    cheapestDetails.price < fastestDetails.price
   const fastestAndCheapestAreEqual = isEqual(cheapest, fastest)
   const isCheapestEmpty = cheapestDetails.packagesLength === 0
 
   return (
     cheapest &&
-    (
-      hasCheapestLessPackages ||
+    (hasCheapestLessPackages ||
       isCheapestCheaperThanFastest ||
       isCheapestEmpty ||
-      fastestAndCheapestAreEqual
-    )
+      fastestAndCheapestAreEqual)
   )
 }
 
@@ -343,7 +343,8 @@ function shouldShowFastest(cheapest, fastest) {
   const cheapestDetails = getStructuredOption(cheapest, CHEAPEST)
   const fastestDetails = getStructuredOption(fastest, FASTEST)
 
-  const hasCheapestLessPackages = cheapestDetails.packagesLength < fastestDetails.packagesLength
+  const hasCheapestLessPackages =
+    cheapestDetails.packagesLength < fastestDetails.packagesLength
   const fastestAndCheapestAreEqual = isEqual(cheapest, fastest)
 
   return fastest && !fastestAndCheapestAreEqual && !hasCheapestLessPackages

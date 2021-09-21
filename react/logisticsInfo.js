@@ -144,14 +144,17 @@ export function getNewLogisticsInfoIfDelivery({
   }
 
   const selectedSla = findSlaOption([logisticsInfo], logisticsInfo.selectedSla)
-  const shouldUseSelectedSla = selectedSla && selectedSla.deliveryChannel === channel
+  const shouldUseSelectedSla =
+    selectedSla && selectedSla.deliveryChannel === channel
 
   if (hasCurrentDeliveryChannel(logisticsInfo, channel)) {
     return {
       ...logisticsInfo,
       addressId: actionAddress.addressId,
       selectedDeliveryChannel: channel,
-      selectedSla: shouldUseSelectedSla ? logisticsInfo.selectedSla : defaultSlaSelection.id,
+      selectedSla: shouldUseSelectedSla
+        ? logisticsInfo.selectedSla
+        : defaultSlaSelection.id,
     }
   }
 }
