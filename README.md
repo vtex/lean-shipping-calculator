@@ -2,6 +2,8 @@
 
 > Utilities library to for VTEX lean shipping options
 
+[Documentation](https://docs.google.com/document/d/1tDhV1ZOhHhwRYXRGcYmsLvNjsc2pzfQGHKePV68BEKg)
+
 ## Install
 
 ```sh
@@ -71,7 +73,7 @@ const leanShippingCalculator = require('@vtex/lean-shipping-calculator')
 
 const options = leanShippingCalculator.getLeanShippingOptions({
   logisticsInfo,
-  activeChannel
+  activeChannel,
 })
 
 console.log(options)

@@ -1,4 +1,6 @@
-import estimateCalculator from '@vtex/estimate-calculator'
+import estimateCalculator, {
+  getShippingEstimateQuantityInSeconds,
+} from '@vtex/estimate-calculator'
 import flatten from 'lodash/flatten'
 import groupBy from 'lodash/groupBy'
 import get from 'lodash/get'
@@ -238,9 +240,13 @@ function getAverageEstimate(leanOption) {
 }
 
 export function getStructuredOption(option, optionString) {
+  const shippingEstimate = getLatestSLAEstimate(option)
   return {
     price: getAccumulatedPrice(option),
-    shippingEstimate: getLatestSLAEstimate(option),
+    shippingEstimate,
+    shippingEstimateInSeconds: getShippingEstimateQuantityInSeconds(
+      shippingEstimate
+    ),
     averageEstimatePerItem: getAverageEstimate(option),
     packagesLength: getPackagesLength(option),
     ...(optionString ? { id: optionString } : {}),

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Validate selected SLAs and consider different options.
+
 ## [0.2.12] - 2021-07-29
 
 ### Fixed

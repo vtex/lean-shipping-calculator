@@ -24,7 +24,11 @@ export function isDelivery(deliveryChannelSource) {
 }
 
 export function hasDeliveryWindows(sla) {
-  return sla && sla.availableDeliveryWindows.length > 0
+  return (
+    sla &&
+    sla.availableDeliveryWindows &&
+    sla.availableDeliveryWindows.length > 0
+  )
 }
 
 export function hasOnlyScheduledDelivery(slas) {
