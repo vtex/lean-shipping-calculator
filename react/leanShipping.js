@@ -445,7 +445,96 @@ function getBestOption({
       li => li.every(x => !slasAvailableToEveryItem.includes(x.selectedSla)),
     ])[0] || fallback
 
-  return bestLogisticsInfo
+  const report = generateReport({
+    arrayOfSlas,
+    property,
+    currentLogisticsInfo,
+    bestIndividualLogisticsInfo,
+    bestConsistentLogisticsInfo,
+    bestLogisticsInfo,
+    fallback,
+  })
+
+  return [bestLogisticsInfo, report]
+}
+
+function generateReport({
+  arrayOfSlas,
+  property,
+  currentLogisticsInfo,
+  bestIndividualLogisticsInfo,
+  bestConsistentLogisticsInfo,
+  fallback,
+}) {
+  const validLogisticsInfoArray = [
+    { logisticsInfo: currentLogisticsInfo, method: 'current' },
+    { logisticsInfo: bestIndividualLogisticsInfo, method: 'individual' },
+    { logisticsInfo: bestConsistentLogisticsInfo, method: 'consistent' },
+  ].filter(x => x.logisticsInfo)
+
+  const slasAvailableToEveryItem = intersection(
+    ...arrayOfSlas.map(slas => slas.map(sla => sla.id))
+  )
+
+  const bestLogisticsInfo = sortBy(validLogisticsInfoArray, [
+    x => getStructuredOption(x.logisticsInfo)[property],
+    x =>
+      x.logisticsInfo.every(
+        y => !slasAvailableToEveryItem.includes(y.selectedSla)
+      ),
+  ])[0] || { logisticsInfo: fallback, method: 'fallback' }
+
+  const selectedSlas = [
+    ...new Set(bestLogisticsInfo.logisticsInfo.map(li => li.selectedSla)),
+  ]
+  const numberOfAvailableSlas = new Set(
+    arrayOfSlas.map(slas => slas.map(sla => sla.id))
+  ).size
+
+  const profit = bestIndividualLogisticsInfo
+    ? getStructuredOption(bestLogisticsInfo.logisticsInfo)[property] -
+      getStructuredOption(bestIndividualLogisticsInfo)[property]
+    : -1
+
+  const prefix = property === PRICE ? 'cheapest' : 'fastest'
+  const report = {
+    numberOfAvailableSlas,
+    [`${prefix}Profit`]: profit,
+    [`${prefix}NumberOfSelectedSlas`]: selectedSlas.length,
+    [`${prefix}SelectedMethod`]: bestLogisticsInfo.method,
+    [`${prefix}CurrentMethodIsValid`]: currentLogisticsInfo !== null,
+    [`${prefix}IndividualMethodIsValid`]: bestIndividualLogisticsInfo !== null,
+    [`${prefix}ConsistentMethodIsValid`]: bestConsistentLogisticsInfo !== null,
+  }
+
+  return report
+}
+
+function getAccountName() {
+  const vtex = window.vtex
+  return (
+    (vtex && (vtex.accountName || (vtex.vtexid && vtex.vtexid.accountName))) ||
+    (window.__RUNTIME__ && window.__RUNTIME__.account)
+  )
+}
+
+function logReport(report) {
+  const log = {
+    level: 'Info',
+    type: 'Debug',
+    workflowType: 'lean-shipping',
+    workflowInstance: 'get-lean-shipping-options',
+    event: {
+      ...report,
+      orderFormId:
+        window.vtexjs &&
+        window.vtexjs.checkout &&
+        window.vtexjs.checkout.orderFormId,
+    },
+    account: getAccountName(),
+  }
+
+  window.logSplunk && window.logSplunk(log)
 }
 
 export function getLeanShippingOptions({
@@ -453,14 +542,14 @@ export function getLeanShippingOptions({
   activeChannel = DELIVERY,
   isScheduledDeliveryActive = false,
 }) {
-  const cheapest = getBestOption({
+  const [cheapest, cheapestReport] = getBestOption({
     logisticsInfo,
     activeChannel,
     isScheduledDeliveryActive,
     property: PRICE,
   })
 
-  const fastest = getBestOption({
+  const [fastest, fastestReport] = getBestOption({
     logisticsInfo,
     activeChannel,
     isScheduledDeliveryActive,
@@ -477,8 +566,15 @@ export function getLeanShippingOptions({
       activeChannel,
       isScheduledDeliveryActive,
       property: SHIPPING_ESTIMATE_IN_SECONDS,
-    })
+    })[0]
   }
+
+  logReport({
+    activeChannel,
+    isScheduledDeliveryActive,
+    ...cheapestReport,
+    ...fastestReport,
+  })
 
   return {
     ...(shouldShowCheapest(cheapest, fastest) ? { cheapest } : {}),
