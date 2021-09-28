@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Debug logs for getLeanShippingOptions function
+
 ## [0.2.13] - 2021-09-21
 
 ### Fixed
