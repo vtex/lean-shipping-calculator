@@ -534,7 +534,9 @@ function logReport(report) {
     account: getAccountName(),
   }
 
-  window.logSplunk && window.logSplunk(log)
+  if (Math.random() < 0.1) {
+    window.logSplunk && window.logSplunk(log)
+  }
 }
 
 export function getLeanShippingOptions({
