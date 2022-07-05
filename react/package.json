@@ -5,5 +5,5 @@
     "@vtex/estimate-calculator": "1.0.7",
     "lodash": "^4.17.15"
   },
-  "version": "0.2.14"
+  "version": "0.2.15"
 }
