@@ -7,10 +7,9 @@ import {
   isPickup,
   hasPostalCodeGeocoordinates,
   hasCurrentDeliveryChannel,
+  removeAddressValidation,
 } from './utils'
 import { getNewLogisticsInfo } from './logisticsInfo'
-import { helpers } from 'vtex.address-form'
-const { removeValidation } = helpers
 
 export function setSelectedSlaFromSlaOption({
   logisticsInfo,
@@ -52,8 +51,8 @@ export function setSelectedSlaFromSlaOption({
     })
   })
 
-  const actionAddress = removeValidation(action.address)
-  const actionSearchAddress = removeValidation(action.searchAddress)
+  const actionAddress = removeAddressValidation(action.address)
+  const actionSearchAddress = removeAddressValidation(action.searchAddress)
   const hasSlas = logisticsInfo && !!logisticsInfo.find(li => hasSLAs(li))
 
   if (newLogisticsInfo && !hasSlas) {

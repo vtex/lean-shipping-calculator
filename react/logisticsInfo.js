@@ -4,14 +4,13 @@ import {
   isPickup,
   findChannelById,
 } from '@vtex/delivery-packages/dist/delivery-channel'
-import { helpers } from 'vtex.address-form'
 import {
   findSlaOption,
   isFromCurrentSeller,
   hasCurrentDeliveryChannel,
   findSlaWithChannel,
+  removeAddressValidation,
 } from './utils'
-const { removeValidation } = helpers
 
 export function getNewLogisticsInfoIfPickup({
   actionAddress,
@@ -169,8 +168,8 @@ export function getNewLogisticsInfo({
   newLogisticsInfo,
   seller,
 }) {
-  const actionAddress = removeValidation(action.address)
-  const actionSearchAddress = removeValidation(action.searchAddress)
+  const actionAddress = removeAddressValidation(action.address)
+  const actionSearchAddress = removeAddressValidation(action.searchAddress)
 
   return newLogisticsInfo.map(li => {
     const hasSellerIdMatch = isFromCurrentSeller({ items, li, seller })
