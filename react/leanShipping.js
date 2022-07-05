@@ -1,5 +1,10 @@
 import estimateCalculator from '@vtex/estimate-calculator'
-import { intersection, isEqual, minBy, omit, sortBy, sumBy } from 'lodash'
+import intersection from 'lodash/intersection'
+import isEqual from 'lodash/isEqual'
+import minBy from 'lodash/minBy'
+import omit from 'lodash/omit'
+import sortBy from 'lodash/sortBy'
+import sumBy from 'lodash/sumBy'
 import { getStructuredOption } from './DeliveryPackagesUtils'
 import {
   CHEAPEST,

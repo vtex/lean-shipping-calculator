@@ -19,7 +19,6 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "@vtex/address-form": "^3.5.12",
     "@vtex/prettier-config": "^0.1.4",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",

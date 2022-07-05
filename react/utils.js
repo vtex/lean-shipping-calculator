@@ -181,3 +181,20 @@ export function findSlaWithChannel(item, channel) {
 
   return cheapestSla
 }
+
+export function removeAddressValidation(address) {
+  const newAddressEntries = Object.entries(address).map(([key, value]) => {
+    const newValue =
+      value.value == null
+        ? typeof value === 'object'
+          ? null
+          : value
+        : value.value
+
+    return [key, newValue]
+  })
+
+  const newAddress = Object.fromEntries(newAddressEntries)
+
+  return newAddress
+}

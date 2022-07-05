@@ -11,9 +11,7 @@
     "smartcheckout"
   ],
   "settingsSchema": {},
-  "dependencies": {
-    "vtex.address-form": "3.x"
-  },
+  "dependencies": {},
   "builders": {
     "react": "2.x"
   },
