@@ -189,7 +189,7 @@ export function removeAddressValidation(address) {
 
   const newAddressEntries = Object.entries(address).map(([key, value]) => {
     const newValue =
-      value.value == null
+      value == null || value.value == null
         ? typeof value === 'object'
           ? null
           : value

@@ -3,6 +3,7 @@ import {
   getOptionsDetails,
   getSelectedDeliveryOption,
 } from '../leanShipping'
+import { removeAddressValidation } from '../utils'
 
 describe('getOptionDetails', () => {
   it('should get correct lean shipping options details', () => {
@@ -62,5 +63,45 @@ describe('getSelectedDeliveryOption', () => {
     })
 
     expect(resultDeliveryOption).toEqual('CHEAPEST')
+  })
+})
+
+describe('removeAddressValidation', () => {
+  it('should return empty object when address is undefined', () => {
+    expect(removeAddressValidation(undefined)).toStrictEqual({})
+  })
+
+  it('should clean simple address object', () => {
+    expect(removeAddressValidation({
+      postalCode: {
+        value: 'abc123',
+      },
+    })).toStrictEqual({
+      postalCode: 'abc123',
+    })
+  })
+
+  it('should not fail when address doesnt have validation', () => {
+    expect(removeAddressValidation({
+      postalCode: 'abc123',
+    })).toStrictEqual({
+      postalCode: 'abc123',
+    })
+  })
+
+  it('should not fail when field is undefined', () => {
+    expect(removeAddressValidation({
+      postalCode: undefined,
+    })).toStrictEqual({
+      postalCode: undefined,
+    })
+  })
+
+  it('should not fail when field value is undefined', () => {
+    expect(removeAddressValidation({
+      postalCode: { value: undefined },
+    })).toStrictEqual({
+      postalCode: null,
+    })
   })
 })
