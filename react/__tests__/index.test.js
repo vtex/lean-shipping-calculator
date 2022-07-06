@@ -1,8 +1,8 @@
-import { CHEAPEST, DELIVERY } from '../react/constants'
+import { CHEAPEST, DELIVERY } from '../constants'
 import {
   getOptionsDetails,
   getSelectedDeliveryOption,
-} from '../react/leanShipping'
+} from '../leanShipping'
 
 describe('getOptionDetails', () => {
   it('should get correct lean shipping options details', () => {

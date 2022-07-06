@@ -1,6 +1,6 @@
-import { DELIVERY, PICKUP_IN_STORE } from '../../react/constants'
+import { DELIVERY, PICKUP_IN_STORE } from '../../constants'
 
-const ONLY_DELIVERY_NO_SLAS_LOGISTICS_INFO = [
+export const ONLY_DELIVERY_NO_SLAS_LOGISTICS_INFO = [
   {
     addressId: 'residentialId',
     itemIndex: 0,
@@ -18,7 +18,7 @@ const ONLY_DELIVERY_NO_SLAS_LOGISTICS_INFO = [
   },
 ]
 
-const ONLY_DELIVERY_LOGISTICS_INFO = [
+export const ONLY_DELIVERY_LOGISTICS_INFO = [
   {
     addressId: 'residentialId',
     itemIndex: 0,
@@ -39,7 +39,7 @@ const ONLY_DELIVERY_LOGISTICS_INFO = [
   },
 ]
 
-const DELIVERY_PICKUP_LOGISTICS_INFO = [
+export const DELIVERY_PICKUP_LOGISTICS_INFO = [
   {
     addressId: 'residentialId',
     itemIndex: 0,
@@ -68,7 +68,7 @@ const DELIVERY_PICKUP_LOGISTICS_INFO = [
   },
 ]
 
-const MULTIPLE_DELIVERY_PICKUP_LOGISTICS_INFO = [
+export const MULTIPLE_DELIVERY_PICKUP_LOGISTICS_INFO = [
   {
     addressId: 'residentialId',
     itemIndex: 0,
@@ -118,7 +118,7 @@ const MULTIPLE_DELIVERY_PICKUP_LOGISTICS_INFO = [
   },
 ]
 
-const PICKUP_SELECTED_LOGISTICS_INFO = [
+export const PICKUP_SELECTED_LOGISTICS_INFO = [
   {
     addressId: 'residentialId',
     itemIndex: 0,
@@ -152,7 +152,7 @@ const PICKUP_SELECTED_LOGISTICS_INFO = [
   },
 ]
 
-const NO_PICKUP_SELECTED_LOGISTICS_INFO = [
+export const NO_PICKUP_SELECTED_LOGISTICS_INFO = [
   {
     addressId: 'residentialId',
     itemIndex: 0,
@@ -176,7 +176,7 @@ const NO_PICKUP_SELECTED_LOGISTICS_INFO = [
   },
 ]
 
-const MULTIPLE_SELLERS_LOGISTICS_INFO = [
+export const MULTIPLE_SELLERS_LOGISTICS_INFO = [
   {
     addressId: 'residentialId',
     itemIndex: 0,
@@ -230,13 +230,3 @@ const MULTIPLE_SELLERS_LOGISTICS_INFO = [
     selectedSla: 'deliverySLA',
   },
 ]
-
-module.exports = {
-  ONLY_DELIVERY_NO_SLAS_LOGISTICS_INFO,
-  ONLY_DELIVERY_LOGISTICS_INFO,
-  DELIVERY_PICKUP_LOGISTICS_INFO,
-  PICKUP_SELECTED_LOGISTICS_INFO,
-  MULTIPLE_SELLERS_LOGISTICS_INFO,
-  MULTIPLE_DELIVERY_PICKUP_LOGISTICS_INFO,
-  NO_PICKUP_SELECTED_LOGISTICS_INFO,
-}

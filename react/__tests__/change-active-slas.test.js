@@ -1,8 +1,8 @@
 import {
   changeActiveSlas,
   setSelectedSlaFromSlaOption,
-} from '../react/changeActiveSlas'
-import { DELIVERY, PICKUP_IN_STORE } from '../react/constants'
+} from '../changeActiveSlas'
+import { DELIVERY, PICKUP_IN_STORE } from '../constants'
 import {
   ONLY_DELIVERY_NO_SLAS_LOGISTICS_INFO,
   ONLY_DELIVERY_LOGISTICS_INFO,
