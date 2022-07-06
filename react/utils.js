@@ -183,6 +183,10 @@ export function findSlaWithChannel(item, channel) {
 }
 
 export function removeAddressValidation(address) {
+  if (address == null) {
+    return {}
+  }
+
   const newAddressEntries = Object.entries(address).map(([key, value]) => {
     const newValue =
       value.value == null
