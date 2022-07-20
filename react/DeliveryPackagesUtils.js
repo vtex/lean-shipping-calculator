@@ -39,7 +39,11 @@ function getPackagesLength(chosenPackage) {
     flatten(
       chosenPackage
         .filter(li => isDelivery(li) && (!!li.selectedSla || hasSLAs(li)))
-        .map(li => li.selectedSla)
+        .map(li => {
+          const sla = li.slas.find(sla => sla.id === li.selectedSla)
+
+          return sla.id + sla.shippingEstimate
+        })
     )
   )
 
