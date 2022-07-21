@@ -1,8 +1,5 @@
 import { CHEAPEST, DELIVERY } from '../constants'
-import {
-  getOptionsDetails,
-  getSelectedDeliveryOption,
-} from '../leanShipping'
+import { getOptionsDetails, getSelectedDeliveryOption } from '../leanShipping'
 import { removeAddressValidation } from '../utils'
 
 describe('getOptionDetails', () => {
@@ -39,6 +36,45 @@ describe('getOptionDetails', () => {
 
     expect(resultDetails).toEqual(expectedResult)
   })
+
+  it('should account for shipping estimate in packages length count', () => {
+    const delivery = {
+      [CHEAPEST]: [
+        {
+          selectedDeliveryChannel: DELIVERY,
+          selectedSla: 'Normal',
+          slas: [
+            {
+              id: 'Normal',
+              price: 100,
+              deliveryChannel: DELIVERY,
+              shippingEstimate: '1d',
+            },
+          ],
+        },
+        {
+          selectedDeliveryChannel: DELIVERY,
+          selectedSla: 'Normal',
+          slas: [
+            {
+              id: 'Normal',
+              price: 100,
+              deliveryChannel: DELIVERY,
+              shippingEstimate: '3d',
+            },
+          ],
+        },
+      ],
+    }
+
+    const details = getOptionsDetails(delivery)
+
+    expect(details).toStrictEqual([
+      expect.objectContaining({
+        packagesLength: 2,
+      }),
+    ])
+  })
 })
 
 describe('getSelectedDeliveryOption', () => {
@@ -72,35 +108,43 @@ describe('removeAddressValidation', () => {
   })
 
   it('should clean simple address object', () => {
-    expect(removeAddressValidation({
-      postalCode: {
-        value: 'abc123',
-      },
-    })).toStrictEqual({
+    expect(
+      removeAddressValidation({
+        postalCode: {
+          value: 'abc123',
+        },
+      })
+    ).toStrictEqual({
       postalCode: 'abc123',
     })
   })
 
   it('should not fail when address doesnt have validation', () => {
-    expect(removeAddressValidation({
-      postalCode: 'abc123',
-    })).toStrictEqual({
+    expect(
+      removeAddressValidation({
+        postalCode: 'abc123',
+      })
+    ).toStrictEqual({
       postalCode: 'abc123',
     })
   })
 
   it('should not fail when field is undefined', () => {
-    expect(removeAddressValidation({
-      postalCode: undefined,
-    })).toStrictEqual({
+    expect(
+      removeAddressValidation({
+        postalCode: undefined,
+      })
+    ).toStrictEqual({
       postalCode: undefined,
     })
   })
 
   it('should not fail when field value is undefined', () => {
-    expect(removeAddressValidation({
-      postalCode: { value: undefined },
-    })).toStrictEqual({
+    expect(
+      removeAddressValidation({
+        postalCode: { value: undefined },
+      })
+    ).toStrictEqual({
       postalCode: null,
     })
   })
