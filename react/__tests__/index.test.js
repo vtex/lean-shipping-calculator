@@ -75,6 +75,68 @@ describe('getOptionDetails', () => {
       }),
     ])
   })
+
+  it("should ignore items that aren't available for delivery", () => {
+    const delivery = {
+      CHEAPEST: [
+        {
+          itemIndex: 0,
+          selectedSla: null,
+          selectedDeliveryChannel: 'delivery',
+          slas: [
+            {
+              id: 'Retirada',
+              deliveryChannel: 'pickup-in-point',
+              name: 'Retirada',
+              shippingEstimate: '0bd',
+              price: 100,
+              listPrice: 100,
+              tax: 0,
+            },
+          ],
+        },
+      ],
+    }
+
+    const details = getOptionsDetails(delivery)
+
+    expect(details).toStrictEqual([
+      expect.objectContaining({
+        packagesLength: 0,
+      }),
+    ])
+  })
+
+  it('should not crash if delivery item does not have selected sla yet', () => {
+    const delivery = {
+      CHEAPEST: [
+        {
+          itemIndex: 0,
+          selectedSla: null,
+          selectedDeliveryChannel: 'delivery',
+          slas: [
+            {
+              id: 'Sedex',
+              deliveryChannel: 'delivery',
+              name: 'Sedex',
+              shippingEstimate: '5bd',
+              price: 100,
+              listPrice: 100,
+              tax: 0,
+            },
+          ],
+        },
+      ],
+    }
+
+    const details = getOptionsDetails(delivery)
+
+    expect(details).toStrictEqual([
+      expect.objectContaining({
+        packagesLength: 1,
+      }),
+    ])
+  })
 })
 
 describe('getSelectedDeliveryOption', () => {
@@ -95,10 +157,10 @@ describe('getSelectedDeliveryOption', () => {
     }
 
     const resultDeliveryOption = getSelectedDeliveryOption({
-      newCheapest: delivery['CHEAPEST'],
+      newCheapest: delivery.CHEAPEST,
     })
 
-    expect(resultDeliveryOption).toEqual('CHEAPEST')
+    expect(resultDeliveryOption).toBe('CHEAPEST')
   })
 })
 
