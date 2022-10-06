@@ -9,6 +9,7 @@ import sortBy from 'lodash/sortBy'
 import findIndex from 'lodash/findIndex'
 import uniq from 'lodash/uniq'
 import uniqBy from 'lodash/uniqBy'
+
 import { hasSLAs, isDelivery, getSelectedSlaInSlas } from './utils'
 
 function hasMoreThanOneSla(li) {
@@ -38,9 +39,17 @@ function getPackagesLength(chosenPackage) {
   const packages = uniq(
     flatten(
       chosenPackage
-        .filter(li => isDelivery(li) && (!!li.selectedSla || hasSLAs(li)))
-        .map(li => {
-          const sla = li.slas.find(sla => sla.id === li.selectedSla)
+        .filter(
+          (li) =>
+            isDelivery(li) &&
+            (!!li.selectedSla || (hasSLAs(li) && li.slas.some(isDelivery)))
+        )
+        .map((li) => {
+          const sla = li.slas.find((sla) => sla.id === li.selectedSla)
+
+          if (sla == null) {
+            return null
+          }
 
           return sla.id + sla.shippingEstimate
         })
