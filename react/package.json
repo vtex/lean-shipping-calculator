@@ -7,7 +7,7 @@
   ],
   "scripts": {
     "test": "cross-env NODE_ENV=test jest",
-    "build": "babel --config-file ./.build-babelrc.json . -d lib --extensions '.js','.ts'",
+    "build": "babel --config-file ./.build-babelrc.json . -d lib --delete-dir-on-start --extensions '.js','.ts'",
     "prepublishOnly": "yarn build"
   },
   "dependencies": {
