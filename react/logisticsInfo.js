@@ -13,6 +13,7 @@ import {
 } from './utils'
 
 export function getNewLogisticsInfoIfPickup({
+  activePickupPoint,
   actionAddress,
   actionSearchAddress,
   channel,
@@ -71,7 +72,7 @@ export function getNewLogisticsInfoIfPickup({
       selectedDeliveryChannel:
         defaultDeliverySla && hasMultipleItems ? DELIVERY : channel,
       selectedSla:
-        defaultDeliverySla && hasMultipleItems ? defaultDeliverySla.id : null,
+        defaultDeliverySla && hasMultipleItems ? defaultDeliverySla.id : activePickupPoint && activePickupPoint.id,
     }
   }
 
@@ -180,6 +181,7 @@ export function getNewLogisticsInfo({
 
     if (isPickup(channel)) {
       const newLogisticsInfoIfPickup = getNewLogisticsInfoIfPickup({
+        activePickupPoint: action.activePickupPoint,
         action,
         actionAddress,
         actionSearchAddress,
