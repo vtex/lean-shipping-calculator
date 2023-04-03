@@ -63,16 +63,30 @@ export function getNewLogisticsInfoIfPickup({
       !defaultSlaSelection)
   ) {
     const defaultDeliverySla = findSlaWithChannel(logisticsInfo, DELIVERY)
+
+    if (defaultDeliverySla && hasMultipleItems) {
+      return {
+        ...logisticsInfo,
+        addressId:actionAddress.addressId,
+        selectedDeliveryChannel: DELIVERY,
+        selectedSla: defaultDeliverySla.id
+      }
+    }
+
+    if (activePickupPoint && activePickupPoint.id){
+      return {
+        ...logisticsInfo,
+        addressId: actionSearchAddress.addressId,
+        selectedDeliveryChannel: channel,
+        selectedSla: activePickupPoint.id
+      }
+    }
+
     return {
       ...logisticsInfo,
-      addressId:
-        defaultDeliverySla && hasMultipleItems
-          ? actionAddress.addressId
-          : actionSearchAddress.addressId,
-      selectedDeliveryChannel:
-        defaultDeliverySla && hasMultipleItems ? DELIVERY : channel,
-      selectedSla:
-        defaultDeliverySla && hasMultipleItems ? defaultDeliverySla.id : activePickupPoint && activePickupPoint.id,
+      addressId: actionSearchAddress.addressId,
+      selectedDeliveryChannel: channel,
+      selectedSla: null
     }
   }
 
