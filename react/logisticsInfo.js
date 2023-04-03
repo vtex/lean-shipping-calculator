@@ -67,7 +67,7 @@ export function getNewLogisticsInfoIfPickup({
     if (defaultDeliverySla && hasMultipleItems) {
       return {
         ...logisticsInfo,
-        addressId:actionAddress.addressId,
+        addressId: actionAddress.addressId,
         selectedDeliveryChannel: DELIVERY,
         selectedSla: defaultDeliverySla.id
       }
