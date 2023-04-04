@@ -32,7 +32,7 @@ export function getNewLogisticsInfoIfPickup({
 
   const hasFirstPickupSla =
     firstPickupSla &&
-    logisticsInfo.slas.some(sla => sla.id === firstPickupSla.id)
+    logisticsInfo.slas.some((sla) => sla.id === firstPickupSla.id)
 
   if (
     hasFirstPickupSla &&
@@ -51,7 +51,7 @@ export function getNewLogisticsInfoIfPickup({
 
   const defaultSlaSelection =
     logisticsInfo.slas.find(
-      sla => firstPickupSla && sla.id === firstPickupSla.id
+      (sla) => firstPickupSla && sla.id === firstPickupSla.id
     ) || findSlaWithChannel(logisticsInfo, channel)
 
   if (
@@ -69,16 +69,16 @@ export function getNewLogisticsInfoIfPickup({
         ...logisticsInfo,
         addressId: actionAddress.addressId,
         selectedDeliveryChannel: DELIVERY,
-        selectedSla: defaultDeliverySla.id
+        selectedSla: defaultDeliverySla.id,
       }
     }
 
-    if (activePickupPoint && activePickupPoint.id){
+    if (activePickupPoint && activePickupPoint.id) {
       return {
         ...logisticsInfo,
         addressId: actionSearchAddress.addressId,
         selectedDeliveryChannel: channel,
-        selectedSla: activePickupPoint.id
+        selectedSla: activePickupPoint.id,
       }
     }
 
@@ -86,7 +86,7 @@ export function getNewLogisticsInfoIfPickup({
       ...logisticsInfo,
       addressId: actionSearchAddress.addressId,
       selectedDeliveryChannel: channel,
-      selectedSla: null
+      selectedSla: null,
     }
   }
 
@@ -147,7 +147,7 @@ export function getNewLogisticsInfoIfDelivery({
   if (
     hasCurrentDeliveryChannel(logisticsInfo, channel) &&
     slaFromSlaOption &&
-    logisticsInfo.slas.some(sla => sla.id === slaFromSlaOption.id)
+    logisticsInfo.slas.some((sla) => sla.id === slaFromSlaOption.id)
   ) {
     return {
       ...logisticsInfo,
@@ -186,7 +186,7 @@ export function getNewLogisticsInfo({
   const actionAddress = removeAddressValidation(action.address)
   const actionSearchAddress = removeAddressValidation(action.searchAddress)
 
-  return newLogisticsInfo.map(li => {
+  return newLogisticsInfo.map((li) => {
     const hasSellerIdMatch = isFromCurrentSeller({ items, li, seller })
 
     if (!hasSellerIdMatch) {
