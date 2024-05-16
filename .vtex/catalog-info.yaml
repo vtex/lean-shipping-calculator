@@ -1,0 +1,21 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: lean-shipping-calculator
+  description: Utilities library for VTEX lean shipping options for Checkout V6
+  annotations:
+    github.com/project-slug: vtex/lean-shipping-calculator
+    vtex.com/o11y-os-index: checkout_ui*
+    vtex.com/janus-acronym: ""
+    grafana/dashboard-selector: ""
+    backstage.io/techdocs-ref: dir:../
+  tags:
+    - javascript
+    - react
+spec:
+  type: library
+  lifecycle: maintenance
+  owner: checkout-experience
+  system: checkout
+  dependsOn: []
+  subcomponentOf: checkout-ui, shipping-manager
