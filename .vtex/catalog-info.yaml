@@ -10,13 +10,14 @@ metadata:
     grafana/dashboard-selector: ""
     backstage.io/techdocs-ref: dir:../
     vtex.com/application-id: 1U64087V
+    vtex.com/platform-flow-id: Shopper#4
   tags:
     - javascript
     - react
 spec:
   type: library
   lifecycle: maintenance
-  owner: checkout-experience
+  owner: te-0001
   system: checkout
   dependsOn: []
   subcomponentOf: checkout-ui, shipping-manager
