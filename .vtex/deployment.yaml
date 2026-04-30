@@ -1,5 +1,5 @@
 - name: lean-shipping-calculator
-  referenceId: PLACEHOLDER
+  referenceId: 1U64087V
   description: SonarQube scan for lean-shipping-calculator
   build:
     provider: dkcicd
