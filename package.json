@@ -5,7 +5,8 @@
   "description": "",
   "scripts": {
     "test": "yarn --cwd react test",
-    "lint": "eslint --ext js,ts,jsx,tsx ."
+    "lint": "eslint --ext js,ts,jsx,tsx .",
+    "test:coverage": "yarn --cwd react install --frozen-lockfile && yarn --cwd react test:coverage"
   },
   "keywords": [],
   "author": "",
