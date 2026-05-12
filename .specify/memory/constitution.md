@@ -1,18 +1,21 @@
 <!--
 SYNC IMPACT REPORT
 ==================
-Version change: N/A → 1.0.0 (Initial constitution)
+Version change: 1.0.0 → 1.1.0 (MINOR - material corrections and new sections)
+
+Modified principles:
+- II. Type Safety → II. Code Quality (corrected: project uses JavaScript, not TypeScript)
 
 Added sections:
-- Core Principles (5 principles)
-- Technology Stack
-- Development Workflow
-- Governance
+- VI. Observability (new principle based on existing Splunk logging)
+- VTEX Runtime Dependencies (new subsection in Technology Stack)
+
+Removed sections: None
 
 Templates status:
-- .specify/templates/plan-template.md ✅ Compatible (uses generic Constitution Check)
-- .specify/templates/spec-template.md ✅ Compatible (technology-agnostic)
-- .specify/templates/tasks-template.md ✅ Compatible (generic task structure)
+- .specify/templates/plan-template.md ✅ Compatible
+- .specify/templates/spec-template.md ✅ Compatible
+- .specify/templates/tasks-template.md ✅ Compatible
 
 Follow-up TODOs: None
 -->
@@ -32,16 +35,19 @@ Every feature MUST be implemented as a self-contained, independently testable mo
 
 **Rationale**: As a published npm package (@vtex/lean-shipping-calculator), API clarity and stability directly impact downstream consumers.
 
-### II. Type Safety
+### II. Code Quality
 
-All code MUST leverage TypeScript for compile-time safety.
+All code MUST maintain consistency with existing patterns and follow VTEX coding standards.
 
-- Public API functions MUST have explicit type annotations
-- `any` type is prohibited in new code; existing uses MUST be replaced during refactoring
-- Union types MUST be used instead of loose typing for constrained values (e.g., `'CHEAPEST' | 'FASTEST' | 'COMBINED'`)
-- Type exports MUST accompany function exports for consumer type inference
+- New code MUST follow existing JavaScript (ES6+) patterns in the codebase
+- Functions MUST have clear, descriptive names that indicate their purpose
+- Complex logic MUST be broken into smaller, testable functions
+- Lodash utilities SHOULD be preferred over custom implementations for common operations
+- JSDoc comments SHOULD be added to public API functions to document parameters and return types
 
-**Rationale**: Type safety reduces integration bugs and improves developer experience for library consumers.
+**Rationale**: Consistent code patterns reduce cognitive load and make the codebase easier to maintain and extend.
+
+**Migration Path**: TypeScript migration is encouraged for new modules when team capacity allows. New `.ts` files MUST use strict mode.
 
 ### III. Test Coverage (NON-NEGOTIABLE)
 
@@ -51,6 +57,7 @@ All features MUST have corresponding tests before merge.
 - Edge cases (null inputs, empty arrays, boundary conditions) MUST be tested
 - Tests MUST run in pre-push hooks via Husky
 - Test failures MUST block merge
+- Test fixtures SHOULD be used for complex logistics scenarios
 
 **Rationale**: As a shared utility library, regressions propagate to multiple consuming applications. Tests are the safety net.
 
@@ -62,6 +69,7 @@ Breaking changes to the public API MUST follow semantic versioning and require e
 - MINOR version bump for: new functions, new optional parameters
 - PATCH version bump for: bug fixes, internal refactoring with no API change
 - Deprecation warnings MUST precede removals by at least one minor version
+- CHANGELOG.md MUST be updated for every release
 
 **Rationale**: Downstream consumers depend on stable interfaces; unexpected breaks erode trust and cause production incidents.
 
@@ -76,27 +84,51 @@ Prefer the simplest solution that meets requirements.
 
 **Rationale**: Complexity is the enemy of maintainability. Simple code is easier to test, debug, and evolve.
 
+### VI. Observability
+
+Code MUST support debugging and monitoring in production environments.
+
+- Critical decision points SHOULD emit structured logs
+- Log sampling MUST be used to avoid overwhelming logging infrastructure (current: 10% sampling rate)
+- Logs MUST include relevant context (orderFormId, account, workflow identifiers)
+- Error conditions MUST be logged with sufficient detail for diagnosis
+
+**Rationale**: As a library running in checkout flows, observability is critical for diagnosing production issues without access to end-user environments.
+
 ## Technology Stack
 
-- **Language**: TypeScript (strict mode)
-- **Runtime**: Node.js / Browser (universal module)
-- **Package Manager**: npm/yarn
-- **Testing**: Jest (via `yarn --cwd react test`)
+- **Language**: JavaScript (ES6+) transpiled via Babel
+- **Runtime**: Browser (VTEX IO storefront) + Node.js (npm package consumers)
+- **Package Manager**: yarn (workspace) / npm (consumers)
+- **Testing**: Jest with fixtures (via `yarn --cwd react test`)
 - **Linting**: ESLint with @vtex/eslint-config
 - **Formatting**: Prettier with @vtex/prettier-config
 - **Pre-commit/push**: Husky (lint + test)
+- **Build**: Babel CLI with preset-env, preset-react
+
+**Key Dependencies**:
+- `lodash` - Utility functions (intersection, minBy, sortBy, sumBy, isEqual, omit)
+- `@vtex/estimate-calculator` - Shipping estimate calculations
+- `@vtex/delivery-packages` - Delivery package utilities
+
+**VTEX Runtime Dependencies**:
+- `window.vtex` - Account information, vtexid
+- `window.vtexjs` - Checkout API (orderFormId)
+- `window.__RUNTIME__` - IO Runtime context
+- `window.logSplunk` - Observability integration (optional)
 
 **Constraints**:
 - MUST maintain compatibility with both Node.js and browser environments
 - MUST NOT introduce dependencies that increase bundle size significantly
 - MUST follow VTEX coding standards
+- MUST gracefully handle missing VTEX globals (for npm-only consumers)
 
 ## Development Workflow
 
 1. **Feature Development**:
    - Create feature branch from main
    - Write/update tests for new functionality
-   - Implement feature
+   - Implement feature following existing patterns
    - Ensure all tests pass locally (`yarn test`)
    - Ensure linting passes (`yarn lint`)
 
@@ -107,8 +139,9 @@ Prefer the simplest solution that meets requirements.
 
 3. **Release**:
    - Follow semantic versioning
-   - Update CHANGELOG.md with changes
+   - Update CHANGELOG.md with changes (Keep a Changelog format)
    - Tag releases appropriately
+   - Run `yarn --cwd react build` before publishing
 
 ## Governance
 
@@ -118,4 +151,4 @@ This constitution supersedes all other development practices for this repository
 - **Compliance**: All pull requests MUST verify compliance with these principles. Reviewers SHOULD reference specific principles when requesting changes.
 - **Exceptions**: Violations of principles MUST be documented in the PR description with explicit justification. Exceptions do not set precedent.
 
-**Version**: 1.0.0 | **Ratified**: 2026-05-12 | **Last Amended**: 2026-05-12
+**Version**: 1.1.0 | **Ratified**: 2026-05-12 | **Last Amended**: 2026-05-12
