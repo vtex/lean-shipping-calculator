@@ -11,7 +11,8 @@
     "sonar": "./scripts/sonar.sh",
     "sonar:local": "yarn test:coverage && yarn sonar",
     "quality": "yarn lint && yarn test:coverage && yarn sonar",
-    "prepare": "husky"
+    "prepare": "husky",
+    "postinstall": "yarn --cwd react install --frozen-lockfile"
   },
   "keywords": [
     "vtex",
