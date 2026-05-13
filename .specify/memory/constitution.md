@@ -1,14 +1,12 @@
 <!--
 SYNC IMPACT REPORT
 ==================
-Version change: 1.0.0 → 1.1.0 (MINOR - material corrections and new sections)
+Version change: 1.1.0 → 1.2.0 (MINOR - added Public API Reference section)
 
-Modified principles:
-- II. Type Safety → II. Code Quality (corrected: project uses JavaScript, not TypeScript)
+Modified principles: None
 
 Added sections:
-- VI. Observability (new principle based on existing Splunk logging)
-- VTEX Runtime Dependencies (new subsection in Technology Stack)
+- Public API Reference (complete documentation of 5 exported functions)
 
 Removed sections: None
 
@@ -95,6 +93,84 @@ Code MUST support debugging and monitoring in production environments.
 
 **Rationale**: As a library running in checkout flows, observability is critical for diagnosing production issues without access to end-user environments.
 
+## Public API Reference
+
+The library exports 5 functions via default export from `@vtex/lean-shipping-calculator`:
+
+### `getLeanShippingOptions({ logisticsInfo, activeChannel, isScheduledDeliveryActive })`
+
+**Purpose**: Calculate and return the best "lean" shipping options for a cart.
+
+**Parameters**:
+- `logisticsInfo` (Array) - Logistics info for each cart item
+- `activeChannel` (String, default: `'delivery'`) - `'delivery'` or `'pickup-in-point'`
+- `isScheduledDeliveryActive` (Boolean, default: `false`) - Whether scheduled delivery is active
+
+**Returns**: Object with up to 3 options (only those worth showing):
+```js
+{
+  cheapest: [...],  // Cheapest option (logisticsInfo with selected SLAs)
+  fastest: [...],   // Fastest option
+  combined: [...]   // Intermediate option (faster than cheapest, cheaper than fastest)
+}
+```
+
+**Behavior**: Calculates best option by price, best by delivery time, and an intermediate "combined" option if applicable. Filters duplicates. Emits Splunk logs (10% sampling).
+
+### `getOptionsDetails(delivery)`
+
+**Purpose**: Transform shipping options into a structured format with display-friendly details.
+
+**Parameters**:
+- `delivery` (Object) - Object with `CHEAPEST`, `COMBINED`, `FASTEST` keys containing logisticsInfo arrays
+
+**Returns**: Array of option details:
+```js
+[{
+  id: 'CHEAPEST',
+  price: 1000,                      // Total price in cents
+  shippingEstimate: '8bd',          // Delivery estimate string
+  averageEstimatePerItem: 520200,   // Average in seconds
+  packagesLength: 2                 // Number of packages
+}]
+```
+
+### `getSelectedDeliveryOption({ optionsDetails, newCombined, newFastest, newCheapest, activeDeliveryOption })`
+
+**Purpose**: Determine which shipping option should be selected (maintains current if valid, otherwise selects first).
+
+**Parameters**:
+- `optionsDetails` (Array, optional) - Result from `getOptionsDetails`
+- `newCombined`, `newFastest`, `newCheapest` (Array) - logisticsInfo for each option
+- `activeDeliveryOption` (String) - Currently selected option ID
+
+**Returns**: String - ID of the option that should be selected.
+
+### `setSelectedSlaFromSlaOption({ logisticsInfo, action, items, sellers, channel, canEditData, slaOption })`
+
+**Purpose**: Update logisticsInfo for all items to use a specific SLA (e.g., when user selects "Express").
+
+**Parameters**:
+- `logisticsInfo` (Array) - Current logistics info
+- `action` (Object) - Action with `address` and `searchAddress`
+- `items` (Array) - Cart items
+- `sellers` (Array) - Involved sellers
+- `channel` (String) - Delivery channel
+- `canEditData` (Boolean) - Whether data can be edited
+- `slaOption` (String) - SLA ID to select (e.g., `'Expressa'`)
+
+**Returns**: New logisticsInfo with the selected SLA applied to all compatible items.
+
+### `setSelectedDeliveryChannel(logisticsInfo, deliveryChannel)`
+
+**Purpose**: Change the delivery channel (`delivery` or `pickup-in-point`) across all logisticsInfo.
+
+**Parameters**:
+- `logisticsInfo` (Array|Object) - Logistics info (array or single object)
+- `deliveryChannel` (String) - `'delivery'` or `'pickup-in-point'`
+
+**Returns**: New logisticsInfo with `selectedDeliveryChannel` updated.
+
 ## Technology Stack
 
 - **Language**: JavaScript (ES6+) transpiled via Babel
@@ -151,4 +227,4 @@ This constitution supersedes all other development practices for this repository
 - **Compliance**: All pull requests MUST verify compliance with these principles. Reviewers SHOULD reference specific principles when requesting changes.
 - **Exceptions**: Violations of principles MUST be documented in the PR description with explicit justification. Exceptions do not set precedent.
 
-**Version**: 1.1.0 | **Ratified**: 2026-05-12 | **Last Amended**: 2026-05-12
+**Version**: 1.2.0 | **Ratified**: 2026-05-12 | **Last Amended**: 2026-05-13
