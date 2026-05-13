@@ -8,9 +8,42 @@ Utility library for calculating "lean" shipping options in VTEX checkout.
 # Main commands
 yarn test              # Run tests (from root)
 yarn lint              # Check linting
-yarn --cwd react test  # Tests directly in react/
+yarn lint:fix          # Fix linting issues automatically
+yarn test:coverage     # Run tests with coverage report
 yarn --cwd react build # Build for publishing
+
+# Quality commands
+yarn sonar             # Run SonarQube analysis (requires server)
+yarn sonar:local       # Run coverage + SonarQube analysis
+yarn quality           # Full quality check: lint + coverage + sonar
 ```
+
+## Git Hooks (Husky)
+
+| Hook | Runs | Purpose |
+|------|------|---------|
+| `pre-commit` | `yarn lint` | Ensure code quality before commit |
+| `pre-push` | `yarn lint && yarn test:coverage` | Full validation before push |
+
+## SonarQube Setup
+
+1. Copy the example env file:
+```bash
+cp .env.local.example .env.local
+```
+
+2. Configure your credentials in `.env.local`:
+```bash
+SONAR_HOST_URL=http://sonarqube.vtex.systems/
+SONAR_TOKEN=your_token_here
+```
+
+3. Run analysis:
+```bash
+yarn sonar:local  # Coverage + SonarQube
+```
+
+> **Note**: `.env.local` is gitignored - never commit tokens!
 
 ## Project Structure
 
