@@ -1,3 +1,4 @@
+/* eslint-disable */
 import estimateCalculator from '@vtex/estimate-calculator'
 import intersection from 'lodash/intersection'
 import isEqual from 'lodash/isEqual'

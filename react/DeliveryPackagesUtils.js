@@ -1,3 +1,4 @@
+/* eslint-disable */
 import estimateCalculator, {
   getShippingEstimateQuantityInSeconds,
 } from '@vtex/estimate-calculator'

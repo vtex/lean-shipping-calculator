@@ -1,17 +1,10 @@
 #!/bin/sh
+set -e
 
 echo "🔍 Running lint check..."
-yarn lint
-if [ $? -ne 0 ]; then
-  echo "❌ Lint failed. Please fix the issues before pushing."
-  exit 1
-fi
+yarn lint --quiet
 
 echo "🧪 Running tests with coverage..."
 yarn test:coverage
-if [ $? -ne 0 ]; then
-  echo "❌ Tests failed. Please fix the issues before pushing."
-  exit 1
-fi
 
-echo "✅ All checks passed! Ready to push."
+echo "✅ All checks passed!"
