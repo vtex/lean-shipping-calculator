@@ -1,8 +1,28 @@
 # Lean Shipping Calculator
 
-Utility library for calculating "lean" shipping options in VTEX checkout.
+Utility library for calculating "lean" shipping options in VTEX checkout. This file is the entry point for AI agents (Claude Code, Cursor, Copilot) working in this repository.
 
-## Quick Reference
+## Golden Path mode
+
+This repo follows the **VTEX SDLC Golden Path (GenAI era)** with the full SpecKit setup committed.
+
+- **Default flow:** **SDD Lite** — for bug fixes, small features, and isolated changes. Use the `specification` skill to draft a spec, then `implementing` to apply it. The constitution still applies as a source of truth, but `.specify/templates/*` and `speckit-*` slash commands are optional.
+- **When to escalate to SDD Full:** changes that touch the public API (`react/index.js`), introduce a new module, or affect any consumer of this lib (`checkout-ui`, `shipping-manager`). Use the full `speckit-*` flow: constitution → specify → plan → tasks → implement.
+- **Lifecycle:** `maintenance` (see `.vtex/catalog-info.yaml`). The team prioritizes correctness and stability over new features.
+
+## Sources of truth
+
+Canonical references for both humans and agents:
+
+- [README.md](./README.md) — usage and public API documentation
+- [.specify/memory/constitution.md](./.specify/memory/constitution.md) — non-negotiable engineering principles (current version 1.2.0)
+- [.vtex/catalog-info.yaml](./.vtex/catalog-info.yaml) — service metadata, ownership (`te-0001`), system (`checkout`)
+- [.vtex/deployment.yaml](./.vtex/deployment.yaml) — CI pipeline (`dkcicd` / `node-ci-v2` + SonarQube)
+- [CHANGELOG.md](./CHANGELOG.md) — release history (Keep a Changelog format)
+- [manifest.json](./manifest.json) — VTEX IO manifest (vendor, version, builders)
+- External design doc: <https://docs.google.com/document/d/1tDhV1ZOhHhwRYXRGcYmsLvNjsc2pzfQGHKePV68BEKg>
+
+## Verified commands
 
 ```bash
 # Main commands
@@ -69,6 +89,28 @@ react/
 | `setSelectedSlaFromSlaOption` | Apply a specific SLA to all items |
 | `setSelectedDeliveryChannel` | Change delivery channel (delivery/pickup) |
 
+## Expected skills
+
+Agents working in this repo should prefer the following skills (installed in [.agents/skills/](./.agents/skills/)):
+
+| Skill | Purpose |
+|-------|---------|
+| `specification` | Author a Lite SDD spec from a Jira task or feature description (default flow) |
+| `implementing` | Implement code from an approved Lite SDD spec |
+| `speckit-constitution` | Read/update [`.specify/memory/constitution.md`](./.specify/memory/constitution.md) |
+| `speckit-specify` | Create a Full SDD feature spec under `specs/<feature>/spec.md` |
+| `speckit-plan` | Generate the implementation plan for an approved spec |
+| `speckit-tasks` | Break the plan into ordered tasks |
+| `speckit-implement` | Execute the tasks list |
+| `speckit-analyze` | Cross-check spec / plan / tasks consistency before merge |
+| `speckit-clarify` | Surface ambiguities in a spec |
+| `speckit-git-*` | Branch / commit helpers wired into the SpecKit flow |
+
+**Recommended MCPs:**
+
+- **GitHub MCP** — when a change may affect public-API consumers (`checkout-ui`, `shipping-manager`). Use it to inspect downstream usage before altering exports in [react/index.js](./react/index.js).
+- **Atlassian MCP** (optional) — when implementing a Jira-tracked task and the agent should sync status.
+
 ## Code Patterns
 
 - **JavaScript ES6+** with Babel (not TypeScript)
@@ -92,6 +134,21 @@ The code accesses VTEX globals when available:
 4. **Backward Compatibility** - Strict semver
 5. **Simplicity** - YAGNI, pure functions
 6. **Observability** - Structured logs with sampling
+
+## Autonomy limits
+
+The agent **MUST NOT** modify the following without explicit human approval:
+
+- [manifest.json](./manifest.json) — version, vendor, builders (controls VTEX IO deploy).
+- [.vtex/deployment.yaml](./.vtex/deployment.yaml) — CI pipeline configuration (dkcicd / SonarQube).
+- [.vtex/catalog-info.yaml](./.vtex/catalog-info.yaml) — service metadata, ownership, lifecycle.
+- Public API exported from [react/index.js](./react/index.js) — breaking changes require coordination with `checkout-ui` and `shipping-manager` owners.
+- Production dependencies in [react/package.json](./react/package.json) — adding / removing / upgrading affects downstream apps.
+- [publish-release.sh](./publish-release.sh) — release script.
+- Husky hooks in [package.json](./package.json) — bypassing pre-commit/pre-push with `--no-verify` is forbidden.
+- [.specify/memory/constitution.md](./.specify/memory/constitution.md) — amendments require a version bump and human review (see Governance section in the constitution).
+
+For everything else (refactors inside `react/`, new tests, fixture extensions, doc updates, dev-dependency tweaks scoped to tests), the agent may proceed and open a PR for human review.
 
 ## Commit Conventions
 
