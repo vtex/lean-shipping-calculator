@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "skills": {
+    "implementing": {
+      "source": "vtex/vtex-agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/implementing/SKILL.md",
+      "computedHash": "ecfed93437e9059813b1df567b96719eb79d6cac9a25d61cf6095bbf5a1ba290"
+    },
+    "specification": {
+      "source": "vtex/vtex-agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/specification/SKILL.md",
+      "computedHash": "cda30140ad510204eb35cc811b030fabb445451c4c3a267901e1596b9f67b7b0"
+    }
+  }
+}
