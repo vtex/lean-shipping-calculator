@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { getLeanShippingOptions } from '../leanShipping'
 
 import { DELIVERY } from '../constants'

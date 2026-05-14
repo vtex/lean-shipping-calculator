@@ -1,0 +1,6 @@
+#!/bin/sh
+set -e
+
+echo "🔍 Running lint check..."
+yarn lint --quiet
+echo "✅ Lint passed!"

@@ -2,20 +2,26 @@
   "name": "lean-shipping-calculator",
   "version": "0.2.1",
   "private": true,
-  "description": "",
+  "description": "Utilities library for VTEX lean shipping options",
   "scripts": {
     "test": "yarn --cwd react test",
     "lint": "eslint --ext js,ts,jsx,tsx .",
-    "test:coverage": "yarn --cwd react install --frozen-lockfile && yarn --cwd react test:coverage"
+    "lint:fix": "eslint --ext js,ts,jsx,tsx . --fix",
+    "test:coverage": "yarn --cwd react test:coverage",
+    "sonar": "./scripts/sonar.sh",
+    "sonar:local": "yarn test:coverage && yarn sonar",
+    "quality": "yarn lint && yarn test:coverage && yarn sonar",
+    "prepare": "husky",
+    "install:react": "yarn --cwd react install --frozen-lockfile"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "vtex",
+    "shipping",
+    "logistics",
+    "checkout"
+  ],
+  "author": "VTEX",
   "license": "MIT",
-  "husky": {
-    "hooks": {
-      "pre-push": "yarn run lint && yarn run test"
-    }
-  },
   "devDependencies": {
     "@vtex/prettier-config": "^1.0.0",
     "@vtex/tsconfig": "^0.6.0",
@@ -23,8 +29,9 @@
     "eslint": "^8.24.0",
     "eslint-config-vtex": "^15.0.1",
     "eslint-config-vtex-react": "^9.0.1",
-    "husky": "^1.2.0",
+    "husky": "^9.1.7",
     "prettier": "^2.7.1",
+    "sonar-scanner": "^3.1.0",
     "typescript": "^4.8.4"
   }
 }

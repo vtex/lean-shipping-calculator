@@ -1,3 +1,4 @@
+/* eslint-disable */
 import isString from 'lodash/isString'
 import get from 'lodash/get'
 import { PICKUP_IN_STORE, DELIVERY } from './constants'

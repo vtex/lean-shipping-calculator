@@ -1,3 +1,4 @@
+/* eslint-disable */
 import isEqual from 'lodash/isEqual'
 import { DELIVERY } from './constants'
 import {

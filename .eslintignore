@@ -1,2 +1,13 @@
 node_modules
 lib
+.specify
+.claude
+.agents
+.cursor
+.husky
+.vtex
+.scannerwork
+.sonar
+specs
+scripts
+coverage

@@ -1,7 +1,7 @@
 {
   "extends": [
     "vtex",
-    "vtex-react",
+    "vtex-react"
   ],
   "env": {
     "browser": true,
@@ -11,5 +11,10 @@
   },
   "globals": {
     "__DEV__": true
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
   }
 }

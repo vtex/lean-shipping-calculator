@@ -8,6 +8,7 @@
         parameters:
           nodeCommands:
             - install
+            - install:react
             - test:coverage
           sonarProjectName: lean-shipping-calculator
           nodeVersion: 20-bookworm

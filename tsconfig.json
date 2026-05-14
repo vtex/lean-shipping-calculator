@@ -1,6 +1,9 @@
 {
   "extends": "@vtex/tsconfig",
   "compilerOptions": {
+    "allowJs": true,
+    "checkJs": false,
+    "noEmit": true
   },
   "include": ["./react/**/*"]
 }

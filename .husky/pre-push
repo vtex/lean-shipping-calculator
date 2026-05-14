@@ -1,0 +1,10 @@
+#!/bin/sh
+set -e
+
+echo "🔍 Running lint check..."
+yarn lint --quiet
+
+echo "🧪 Running tests with coverage..."
+yarn test:coverage
+
+echo "✅ All checks passed!"
