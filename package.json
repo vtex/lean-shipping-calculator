@@ -12,7 +12,7 @@
     "sonar:local": "yarn test:coverage && yarn sonar",
     "quality": "yarn lint && yarn test:coverage && yarn sonar",
     "prepare": "husky",
-    "postinstall": "yarn --cwd react install --frozen-lockfile"
+    "install:react": "yarn --cwd react install --frozen-lockfile"
   },
   "keywords": [
     "vtex",

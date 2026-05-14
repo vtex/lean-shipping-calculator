@@ -7,7 +7,9 @@
       - name: node-ci-v2
         parameters:
           nodeCommands:
-            - "run test:coverage"
+            - install
+            - install:react
+            - test:coverage
           sonarProjectName: lean-shipping-calculator
           nodeVersion: 20-bookworm
         runtime:
