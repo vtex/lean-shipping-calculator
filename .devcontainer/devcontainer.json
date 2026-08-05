@@ -1,0 +1,45 @@
+{
+  "name": "lean-shipping-calculator",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "args": {
+      "NODE_VARIANT": "20-bookworm",
+      "YARN_VERSION": "1.22.22",
+      "INSTALL_SONAR_SCANNER": "true"
+    }
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+  "remoteUser": "node",
+  "workspaceFolder": "/workspaces/lean-shipping-calculator",
+  "postCreateCommand": ".devcontainer/post-create.sh",
+  "mounts": [
+    "source=lsc-yarn-cache,target=/home/node/.cache/yarn,type=volume"
+  ],
+  "remoteEnv": {
+    "NODE_ENV": "development"
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "orta.vscode-jest",
+        "eamodio.gitlens",
+        "redhat.vscode-yaml",
+        "SonarSource.sonarlint-vscode"
+      ],
+      "settings": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.codeActionsOnSave": {
+          "source.fixAll.eslint": "explicit"
+        },
+        "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
+        "jest.rootPath": "react",
+        "files.eol": "\n"
+      }
+    }
+  }
+}
