@@ -19,7 +19,7 @@ on the host beyond Docker and an editor that speaks the
 | File | Purpose |
 |---|---|
 | `devcontainer.json` | Container definition, VS Code extensions/settings, yarn cache volume |
-| `Dockerfile` | Pinned Node + Yarn Classic, optional SonarQube scanner (needs a headless JRE) |
+| `Dockerfile` | Pinned Node + Yarn Classic, optional SonarQube scanner (bundles its own JRE) |
 | `post-create.sh` | Installs root and `react/` dependencies; seeds `.env.local` when an example exists |
 
 ## Usage
@@ -49,5 +49,7 @@ Build args in `devcontainer.json`:
 - The yarn cache is a named volume (`lsc-yarn-cache`), so rebuilds stay fast.
 - Local SonarQube scans need `SONAR_HOST_URL` and `SONAR_TOKEN` in `.env.local`
   (gitignored — never commit tokens).
+- The scanner archive is picked from the image architecture (`linux-x64` on amd64,
+  `linux-aarch64` on arm64) because its embedded JRE is not emulated across architectures.
 - Husky hooks run inside the container as they do on the host; bypassing them with
   `--no-verify` is forbidden by [AGENTS.md](../AGENTS.md).

@@ -65,8 +65,9 @@ devcontainer up --workspace-folder .
 The container pins **Node 20-bookworm** (same tag as `node-ci-v2` in
 [.vtex/deployment.yaml](./.vtex/deployment.yaml)) and **Yarn Classic 1.22.x** (matches `yarn.lock` v1).
 `post-create.sh` installs both dependency trees (root for lint/husky, `react/` for the library and
-Jest), so `yarn lint && yarn test` works on first open. The SonarQube scanner and its headless JRE
-are installed by default (`INSTALL_SONAR_SCANNER=false` to skip).
+Jest), so `yarn lint && yarn test` works on first open. The SonarQube scanner is installed by
+default (`INSTALL_SONAR_SCANNER=false` to skip); it ships with its own JRE, so no system Java is
+installed in the image.
 
 Agents changing the Node version, the package manager, or the CI pipeline MUST keep
 `.devcontainer/Dockerfile` and `.vtex/deployment.yaml` in sync.

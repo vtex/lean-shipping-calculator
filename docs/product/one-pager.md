@@ -50,7 +50,8 @@ Published as `@vtex/lean-shipping-calculator` and consumed by `checkout-ui` and
   returns IDs and numbers only.
 - Consumers apply the returned `logisticsInfo` through the standard checkout update flow.
 - VTEX browser globals (`window.vtex`, `window.vtexjs`, `window.logSplunk`) may be absent —
-  npm-only consumers must still work.
+  npm-only consumers must still work. Holds today only while a `window` object exists; with no
+  `window` global at all the library throws (gap G1 in [prd.md](./prd.md) §8).
 
 ## 5. Scope of the bet
 

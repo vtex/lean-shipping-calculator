@@ -33,7 +33,8 @@ apart from sampled logging. Consumers: `checkout-ui`, `shipping-manager`.
 - **US-5** — As a checkout engineer, I switch the whole cart between `delivery` and
   `pickup-in-point` in one call.
 - **US-6** — As a checkout engineer, I can consume the package from plain Node (tests, SSR)
-  where `window.vtex*` globals do not exist, without crashes.
+  where the `window` global does not exist, without crashes.
+  > **Not as-built — see gap G1 in §8.** This is the intended contract, not the shipped one.
 
 ### Shopper (indirect beneficiary)
 
@@ -102,9 +103,14 @@ apart from sampled logging. Consumers: `checkout-ui`, `shipping-manager`.
 
 ### FR-6 — Runtime portability
 
-- **FR-6.1** Missing `window.vtex`, `window.vtexjs`, `window.__RUNTIME__`, or `window.logSplunk`
-  MUST NOT throw. Logging degrades to a no-op.
-- **FR-6.2** The published package exposes a single default export object with exactly the five
+- **FR-6.1** *As-built.* When a `window` object exists but `window.vtex`, `window.vtexjs`,
+  `window.__RUNTIME__`, or `window.logSplunk` is missing, nothing throws — logging degrades to
+  a no-op.
+- **FR-6.2** *Target, not as-built (gap G1).* When there is no `window` global at all — plain
+  Node, SSR — the exported functions MUST NOT throw. They currently do:
+  `getAccountName` and `logReport` in `react/leanShipping.js` read the bare `window` identifier,
+  and `getLeanShippingOptions` always calls `logReport`.
+- **FR-6.3** The published package exposes a single default export object with exactly the five
   functions above (`react/index.js`).
 
 ## 4. Non-functional requirements
@@ -133,8 +139,9 @@ Per the NFR golden path workflow (`sdlc-golden-path` skill). Waivers are explici
 - **NFR-Perf-1** — Runs synchronously in the checkout shipping step. Complexity MUST stay linear
   in `items × SLAs`; no network calls, no heavy dependencies. `[NEEDS VALIDATION]` — no latency
   budget is documented in the repo.
-- **NFR-Portability-1** — Must work in browser (VTEX IO storefront) and Node; bundle size impact
-  must stay negligible (lodash imported per-function, not wholesale).
+- **NFR-Portability-1** — Bundle size impact must stay negligible (lodash imported per-function,
+  not wholesale) — as-built. Running outside a browser-like environment (plain Node, SSR) is a
+  **target, not as-built**: see gap G1 in §8.
 - **NFR-DevEx-1** — A contributor can reach a working lint + test loop from a clean machine via
   the dev container ([`.devcontainer/`](../../.devcontainer)), pinned to the CI Node version.
 
@@ -174,7 +181,15 @@ A change to this library is done when:
 6. No autonomy-limited file (`manifest.json`, `.vtex/*.yaml`, `react/package.json` prod deps,
    `publish-release.sh`, Husky hooks, constitution) changed without explicit human approval.
 
-## 8. Open questions
+## 8. Open questions and known gaps
+
+### Known gaps (as-built ≠ intended contract)
+
+| # | Gap | Evidence | Owner |
+|---|---|---|---|
+| G1 | The library throws in an environment with no `window` global, breaking US-6 / FR-6.2 / NFR-Portability-1. | `getAccountName` and `logReport` in [`react/leanShipping.js`](../../react/leanShipping.js) read the bare `window` identifier; `getLeanShippingOptions` always calls `logReport`. `node -e "window.vtex"` → `ReferenceError: window is not defined`. Not caught by tests: jest@23 defaults to the jsdom environment, which defines `window`. | `te-0001` — fix tracked separately (`typeof window` guard + a test with `@jest-environment node`, released as a patch). |
+
+### Open questions
 
 | # | Question | Owner |
 |---|---|---|
