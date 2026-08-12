@@ -9,6 +9,9 @@ This repo follows the **VTEX SDLC Golden Path (GenAI era)** with the full SpecKi
 - **Default flow:** **SDD Lite** — for bug fixes, small features, and isolated changes. Use the `specification` skill to draft a spec, then `implementing` to apply it. The constitution still applies as a source of truth, but `.specify/templates/*` and `speckit-*` slash commands are optional.
 - **When to escalate to SDD Full:** changes that touch the public API (`react/index.js`), introduce a new module, or affect any consumer of this lib (`checkout-ui`, `shipping-manager`). Use the full `speckit-*` flow: constitution → specify → plan → tasks → implement.
 - **Lifecycle:** `maintenance` (see `.vtex/catalog-info.yaml`). The team prioritizes correctness and stability over new features.
+- **Upstream of SDD:** product intent lives in [docs/product/](./docs/product/) — vision → one-pager → PRD. Before writing a spec, read [docs/product/prd.md](./docs/product/prd.md) for the as-built contract, scope boundaries, and NFRs; a spec that contradicts the PRD is a signal to update the PRD first, not to diverge silently.
+- **NFRs:** apply the `sdlc-golden-path` skill when generating or reviewing spec/plan/tasks. NFR waivers for this repo are already recorded in [docs/product/prd.md](./docs/product/prd.md) §4 — reuse them instead of re-deriving.
+- **Environment:** work inside the dev container ([.devcontainer/](./.devcontainer/)) so local runs match `node-ci-v2`.
 
 ## Sources of truth
 
@@ -16,6 +19,8 @@ Canonical references for both humans and agents:
 
 - [README.md](./README.md) — usage and public API documentation
 - [.specify/memory/constitution.md](./.specify/memory/constitution.md) — non-negotiable engineering principles (current version 1.2.0)
+- [docs/product/](./docs/product/) — product artifacts: [product-vision.md](./docs/product/product-vision.md) (north star), [one-pager.md](./docs/product/one-pager.md) (initiative pitch), [prd.md](./docs/product/prd.md) (as-built execution blueprint, incl. NFRs and scope boundaries)
+- [.devcontainer/](./.devcontainer/) — containerized dev environment, pinned to the CI Node version
 - [.vtex/catalog-info.yaml](./.vtex/catalog-info.yaml) — service metadata, ownership (`te-0001`), system (`checkout`)
 - [.vtex/deployment.yaml](./.vtex/deployment.yaml) — CI pipeline (`dkcicd` / `node-ci-v2` + SonarQube)
 - [CHANGELOG.md](./CHANGELOG.md) — release history (Keep a Changelog format)
@@ -37,6 +42,35 @@ yarn sonar             # Run SonarQube analysis (requires server)
 yarn sonar:local       # Run coverage + SonarQube analysis
 yarn quality           # Full quality check: lint + coverage + sonar
 ```
+
+All of the above are defined in [package.json](./package.json) (`yarn --cwd react build` in
+[react/package.json](./react/package.json)). The `sonar*` scripts shell out to
+[scripts/sonar.sh](./scripts/sonar.sh) and require `sonar-scanner` on `PATH` — the dev container
+provides it — plus `SONAR_HOST_URL` / `SONAR_TOKEN`.
+
+> **Known drift (unfixed):** the Husky table below documents a `pre-commit` hook and a
+> `pre-push` running `test:coverage`, but [package.json](./package.json) only defines
+> `pre-push: yarn run lint && yarn run test`. Husky hooks are autonomy-limited — a human must
+> decide whether to align the hooks or the docs.
+
+## Local development (dev container)
+
+Preferred way to get a working environment — see [.devcontainer/README.md](./.devcontainer/README.md).
+
+```bash
+# VS Code: "Reopen in Container", or:
+devcontainer up --workspace-folder .
+```
+
+The container pins **Node 20-bookworm** (same tag as `node-ci-v2` in
+[.vtex/deployment.yaml](./.vtex/deployment.yaml)) and **Yarn Classic 1.22.x** (matches `yarn.lock` v1).
+`post-create.sh` installs both dependency trees (root for lint/husky, `react/` for the library and
+Jest), so `yarn lint && yarn test` works on first open. The SonarQube scanner is installed by
+default (`INSTALL_SONAR_SCANNER=false` to skip); it ships with its own JRE, so no system Java is
+installed in the image.
+
+Agents changing the Node version, the package manager, or the CI pipeline MUST keep
+`.devcontainer/Dockerfile` and `.vtex/deployment.yaml` in sync.
 
 ## Git Hooks (Husky)
 
@@ -65,9 +99,29 @@ yarn sonar:local  # Coverage + SonarQube
 
 > **Note**: `.env.local` is gitignored - never commit tokens!
 
+Scanner configuration lives in [sonar-project.properties](./sonar-project.properties):
+`sonar.sources=react`, and `sonar.javascript.lcov.reportPaths=react/coverage/lcov.info`
+because Jest writes coverage relative to its `rootDir` (`react/`), not the repo root.
+Dashboard: <http://sonarqube.vtex.systems/dashboard?id=lean-shipping-calculator&codeScope=overall>
+
 ## Project Structure
 
 ```
+.devcontainer/         # Containerized dev environment (Node 20-bookworm, Yarn Classic)
+├── devcontainer.json  # Container + editor config
+├── Dockerfile         # Pinned runtime, optional sonar-scanner
+└── post-create.sh     # Installs root + react/ dependencies
+
+scripts/
+└── sonar.sh           # Local SonarQube run (yarn sonar / sonar:local / quality)
+
+sonar-project.properties  # Scanner config: sources=react, lcov=react/coverage/lcov.info
+
+docs/product/          # Product artifacts (golden path)
+├── product-vision.md  # North star, 3-5 years
+├── one-pager.md       # Initiative pitch: problem, hypotheses, assumptions, metrics
+└── prd.md             # As-built blueprint: user stories, FRs, NFRs, scope, KPIs
+
 react/
 ├── index.js           # Entry point - exports 5 functions
 ├── leanShipping.js    # Core logic (getLeanShippingOptions, getOptionsDetails, getSelectedDeliveryOption)

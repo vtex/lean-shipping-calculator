@@ -6,7 +6,11 @@
   "scripts": {
     "test": "yarn --cwd react test",
     "lint": "eslint --ext js,ts,jsx,tsx .",
-    "test:coverage": "yarn --cwd react install --frozen-lockfile && yarn --cwd react test:coverage"
+    "lint:fix": "eslint --ext js,ts,jsx,tsx . --fix",
+    "test:coverage": "yarn --cwd react install --frozen-lockfile && yarn --cwd react test:coverage",
+    "sonar": "bash ./scripts/sonar.sh",
+    "sonar:local": "yarn test:coverage && yarn sonar",
+    "quality": "yarn lint && yarn sonar:local"
   },
   "keywords": [],
   "author": "",
